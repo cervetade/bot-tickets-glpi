@@ -2,15 +2,16 @@
 
 > **Para Claude / cualquier IA:** este documento es la FUENTE DE VERDAD del proyecto.
 > Si algo acá contradice un audio, nota o archivo más viejo, **vale lo que dice acá**.
-> Última actualización: 2026-06-16
+> Última actualización: 2026-06-17
 
 ---
 
 ## 1. Dónde estamos hoy
 
 - **Fase actual (Proceso Unificado):** análisis / primeros spikes técnicos.
-- **Logro del día:** spike de LECTURA de la API de GLPI **completo y funcionando**.
-  El bot ya se conecta, autentica, cambia de perfil y lee las categorías dinámicamente.
+- **Logro:** spike de LECTURA de la API de GLPI **completo y funcionando**.
+  El bot ya se conecta, autentica, cambia de perfil y lee las categorías dinámicamente,
+  filtradas al área 4.0.
 - **Próximo hito:** spike de POST (crear un ticket de prueba en GLPI).
 
 ---
@@ -18,17 +19,28 @@
 ## 2. Requerimientos vigentes
 
 - El bot atiende tickets por WhatsApp y los crea en GLPI vía API REST (sin tocar la base de datos).
-- **El bot atiende tickets de TODOS los departamentos** (Marketing, Mantenimiento, Ingeniería,
-  Sistema 4.0, etc.). "Sistema 4.0" es el ÁREA que desarrolla el proyecto, NO el alcance de las
-  categorías. (Corrección del brief inicial — antes se entendía mal como "solo área 4.0".)
+- **Alcance: SOLO el área 4.0 (IT y Sistemas).** El bot trabaja únicamente con las categorías que
+  cuelgan de la rama `4.0 > ...`. Las de otros departamentos (Mantenimiento, IAC, Marketing,
+  Diseño 3D, etc.) **NO entran**. Filtro técnico: categorías cuyo nombre completo empieza con "4.0".
+  - Caso aclarado: `4.0 > Impresiones 3D` SÍ va (es parte de 4.0). `Diseño 3D` NO va (rama aparte).
 - Las categorías se consultan dinámicamente desde GLPI, no se hardcodean.
 - El usuario escribe en lenguaje natural; NO elige la categoría (a diferencia del formulario de GLPI).
   La IA deduce categoría, título y tipo a partir del mensaje.
-- Diseño modular y reutilizable (el filtro por área quedó parametrizable por si se necesita acotar).
+- Diseño modular y reutilizable: el filtro por área es parametrizable (`GLPI_AREA_PREFIX`), para poder
+  extenderlo a otras áreas en el futuro si se decide.
 
 ---
 
 ## 3. Decisiones tomadas (bitácora)
+
+### 2026-06-17 — Alcance acotado al área 4.0 (IT/Sistemas)
+- **Decisión:** el bot trabaja SOLO con las categorías del área 4.0. El resto de los departamentos
+  queda fuera del alcance.
+- **Por qué:** es el área que desarrolla el proyecto y donde están las categorías pertinentes (IT y
+  Sistemas). Acotar el alcance también hace más realista la clasificación por IA y el plazo de 2 meses.
+- **Nota:** durante el análisis hubo idas y vueltas sobre esto (se evaluó atender todos los
+  departamentos). Queda CONFIRMADO: solo 4.0. El diseño se deja preparado para extender a otras áreas
+  más adelante (filtro parametrizable), pero NO es alcance actual.
 
 ### 2026-06-16 — Uso la API legacy de GLPI
 - **Decisión:** conectar el bot por la API legacy (`apirest.php`, initSession + token).
@@ -57,22 +69,23 @@
 - **GLPI_APP_TOKEN:** app_token del cliente API `botapi`.
 - **GLPI_USER_TOKEN:** "Token de API" generado en las preferencias del usuario.
 - **GLPI_PROFILE_ID:** `4` (Super-Admin, provisorio para explorar).
-- **GLPI_AREA_PREFIX:** vacío (trae todas las áreas).
+- **GLPI_AREA_PREFIX:** `4.0` (filtra solo el área de IT/Sistemas).
 - Estos valores viven en `.env` (NUNCA se suben al repo; ver `.gitignore`).
-- Scripts: `src/glpi_client.py` (cliente + lectura de categorías) y `src/explorar_glpi.py` (explorador GET).
+- Scripts: `glpi_client.py` (cliente + lectura de categorías) y `explorar_glpi.py` (explorador GET).
 
 ---
 
 ## 5. Hallazgos técnicos (de explorar la API)
 
-- Hay **120 categorías** usables para tickets (descartando las "contenedoras" de nivel 1, que no sirven
-  para crear tickets directamente).
+- En toda la empresa hay **120 categorías** usables para tickets; el bot trabaja **solo con las del
+  área 4.0** (filtro `startswith("4.0")`).
 - Las categorías están en **árbol jerárquico** (ej. `4.0 > Falla de equipo > Impresora`).
-  → Esto habilita clasificar en DOS NIVELES (rama grande → hoja), más preciso que elegir entre 120.
+  → Habilita clasificar en DOS NIVELES (rama → hoja), más preciso que elegir entre muchas de una.
 - El **tipo** de ticket (incidente=1 / solicitud=2) lo determina la categoría (`is_incident` / `is_request`).
   Una vez elegida la categoría, el tipo casi sale solo.
 - Varias categorías tienen **plantillas** asociadas (`tickettemplates_id_*`), que pueden imponer
   **campos obligatorios** al crear el ticket. A verificar en el spike de POST.
+- Se descartan las categorías "contenedoras" (nivel 1, sin incidente ni solicitud): no sirven para crear.
 
 ### Estructura de un ticket (analizado sobre el Ticket #1234)
 Un ticket tiene ~40 campos, pero el bot manda solo un puñado:
@@ -81,8 +94,8 @@ Un ticket tiene ~40 campos, pero el bot manda solo un puñado:
   `itilcategories_id` (categoría), `type` (incidente/solicitud).
 - **Opcionales que el bot puede mandar:** `entities_id`, `urgency`, `impact`,
   `requesttypes_id` (canal), `locations_id`.
-- **Lo completa GLPI solo (NO mandar):** `id`, fechas (`date`, `date_creation`, etc.), `status`
-  (al crear queda "nuevo"), `priority` (la calcula con urgency × impact), SLAs/OLAs, estadísticas.
+- **Lo completa GLPI solo (NO mandar):** `id`, fechas, `status` (al crear queda "nuevo"),
+  `priority` (la calcula con urgency × impact), SLAs/OLAs, estadísticas.
 - **El solicitante es relacional**, no un campo simple: vive en `Ticket_User`.
   `users_id_recipient` = quién REGISTRA el ticket (será la cuenta del bot).
   El `requester` (el empleado que escribió por WhatsApp) se setea aparte al crear.
@@ -92,7 +105,7 @@ El usuario aporta solo: su **mensaje** en lenguaje natural (+ su número de tel�
 con WhatsApp; + adjuntos opcionales). El bot fabrica el resto:
 - mensaje → IA resume → `name`
 - mensaje (tal cual) → `content`
-- mensaje → IA clasifica → `itilcategories_id`
+- mensaje → IA clasifica → `itilcategories_id` (solo entre las categorías de 4.0)
 - categoría → `type`
 - número de teléfono → identificación → `requester`
 
@@ -103,7 +116,7 @@ con WhatsApp; + adjuntos opcionales). El bot fabrica el resto:
 - **Spike de POST:** crear un ticket de prueba (próximo paso). Verificar campos obligatorios por plantilla.
 - **Identificación del usuario:** mapear número de teléfono → usuario de GLPI/AD.
   Plan B si no hay match: preguntar nombre y área. (Desafío central.)
-- **Diseño de la clasificación por IA:** empezar simple (LLM tipo Gemini + lista de categorías,
+- **Diseño de la clasificación por IA:** empezar simple (LLM tipo Gemini + lista de categorías de 4.0,
   clasificación en dos niveles). Usar tickets históricos como ejemplos y, sobre todo, como banco de
   pruebas para MEDIR la precisión. Plan B para casos dudosos: confirmar con el usuario o categoría
   "sin clasificar" para revisión humana. No hace falta entrenar un modelo desde cero.
@@ -118,6 +131,7 @@ con WhatsApp; + adjuntos opcionales). El bot fabrica el resto:
 ## 7. Cosas que YA descarté (no proponer de nuevo)
 
 - Tocar la base de datos MariaDB directamente → NO, solo vía API REST.
-- Limitar el bot al área "Sistema 4.0" → NO, atiende todos los departamentos.
+- Atender todos los departamentos → NO, el alcance es SOLO el área 4.0 (IT/Sistemas).
 - Que el usuario elija la categoría como en el formulario de GLPI → NO, la deduce la IA.
 - Usar el app_token del cliente "full access from localhost" → NO sirve corriendo fuera del server.
+- Subir `.env` o archivos con datos internos (.txt de respuestas) al repo público → NO.
