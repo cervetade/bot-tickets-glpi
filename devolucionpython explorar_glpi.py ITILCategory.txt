@@ -1,0 +1,429 @@
+PS C:\Users\MultiTARGUET\Desktop\API-scripts> python explorar_glpi.py ITILCategory
+(sesión cambiada al perfil ID 4)
+
+== ITILCategory: primeras 10 filas (rango 0-9) ==
+
+Campos que tiene este itemtype:
+  id, entities_id, is_recursive, itilcategories_id, name, completename, comment, level, knowbaseitemcategories_id, users_id, groups_id, code, ancestors_cache, sons_cache, is_helpdeskvisible, tickettemplates_id_incident, tickettemplates_id_demand, changetemplates_id, problemtemplates_id, is_incident, is_request, is_problem, is_change, date_mod, date_creation, links
+
+Filas:
+[
+  {
+    "id": 5,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": "Marketing AR > Imagen y Comunicación",
+    "name": "Sponsoreo / Publicidad",
+    "completename": "Marketing AR > Imagen y Comunicación > Sponsoreo / Publicidad",
+    "comment": "",
+    "level": 3,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": null,
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla Marketing",
+    "tickettemplates_id_demand": 0,
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 1,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2020-11-30 09:36:35",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "ITILCategory",
+        "href": "https://glpi.axionlift.com/api.php/v1/ITILCategory/337"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/4"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": "Marketing AR > Imagen y Comunicación",
+    "name": "Merchandising",
+    "completename": "Marketing AR > Imagen y Comunicación > Merchandising",
+    "comment": "",
+    "level": 3,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": null,
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla Marketing",
+    "tickettemplates_id_demand": 0,
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 1,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2020-11-30 09:36:43",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "ITILCategory",
+        "href": "https://glpi.axionlift.com/api.php/v1/ITILCategory/337"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/4"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": "Marketing AR",
+    "name": "Marketing Digital",
+    "completename": "Marketing AR > Marketing Digital",
+    "comment": "",
+    "level": 2,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": "{\"8\":8}",
+    "is_helpdeskvisible": 0,
+    "tickettemplates_id_incident": "Plantilla Marketing",
+    "tickettemplates_id_demand": "Plantilla Marketing",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 0,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2020-11-30 09:36:56",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "ITILCategory",
+        "href": "https://glpi.axionlift.com/api.php/v1/ITILCategory/344"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/4"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/4"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": 0,
+    "name": "Ingenieria",
+    "completename": "Ingenieria",
+    "comment": "",
+    "level": 1,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": "{\"12\":\"12\",\"46\":46}",
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla I+D",
+    "tickettemplates_id_demand": "Plantilla I+D",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 0,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2020-11-30 09:37:35",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/3"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/3"
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": 0,
+    "name": "MANTENIMIENTO",
+    "completename": "MANTENIMIENTO",
+    "comment": "",
+    "level": 1,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": "{\"41\":41,\"92\":92,\"90\":90,\"91\":91,\"239\":239}",
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla Mantenimiento",
+    "tickettemplates_id_demand": "Plantilla Mantenimiento",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 0,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2020-11-30 09:49:47",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/5"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/5"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": "Ingenieria",
+    "name": "IAC - Ingeniería de asistencia comercial",
+    "completename": "Ingenieria > IAC - Ingeniería de asistencia comercial",
+    "comment": "",
+    "level": 2,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": "{\"46\":46}",
+    "is_helpdeskvisible": 0,
+    "tickettemplates_id_incident": "Plantilla I+D",
+    "tickettemplates_id_demand": "Plantilla I+D",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 0,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2020-11-30 09:55:11",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "ITILCategory",
+        "href": "https://glpi.axionlift.com/api.php/v1/ITILCategory/12"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/3"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/3"
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": 0,
+    "name": "Marketing",
+    "completename": "Marketing",
+    "comment": "",
+    "level": 1,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": null,
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": 0,
+    "tickettemplates_id_demand": 0,
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 0,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2021-02-25 10:38:57",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": 0,
+    "name": "INNOVAX",
+    "completename": "INNOVAX",
+    "comment": "",
+    "level": 1,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": "{\"75\":75}",
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla Innovax Gral",
+    "tickettemplates_id_demand": "Plantilla Innovax Gral",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 1,
+    "is_request": 1,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2021-02-25 11:15:34",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/8"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/8"
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": "MANTENIMIENTO",
+    "name": "Estructural/Mobiliario",
+    "completename": "MANTENIMIENTO > Estructural/Mobiliario",
+    "comment": "",
+    "level": 2,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": null,
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla Mantenimiento",
+    "tickettemplates_id_demand": "Plantilla Mantenimiento",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 1,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2021-03-09 09:39:49",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "ITILCategory",
+        "href": "https://glpi.axionlift.com/api.php/v1/ITILCategory/41"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/5"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/5"
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "entities_id": "Root > Axion > Axion AR",
+    "is_recursive": 1,
+    "itilcategories_id": "MANTENIMIENTO",
+    "name": "Reparación máquina-Equipo",
+    "completename": "MANTENIMIENTO > Reparación máquina-Equipo",
+    "comment": "",
+    "level": 2,
+    "knowbaseitemcategories_id": 0,
+    "users_id": 0,
+    "groups_id": 0,
+    "code": "",
+    "ancestors_cache": null,
+    "sons_cache": null,
+    "is_helpdeskvisible": 1,
+    "tickettemplates_id_incident": "Plantilla Mantenimiento",
+    "tickettemplates_id_demand": "Plantilla Mantenimiento",
+    "changetemplates_id": 0,
+    "problemtemplates_id": 0,
+    "is_incident": 1,
+    "is_request": 0,
+    "is_problem": 0,
+    "is_change": 0,
+    "date_mod": "2025-05-02 10:12:58",
+    "date_creation": "2021-03-09 09:40:27",
+    "links": [
+      {
+        "rel": "Entity",
+        "href": "https://glpi.axionlift.com/api.php/v1/Entity/2"
+      },
+      {
+        "rel": "ITILCategory",
+        "href": "https://glpi.axionlift.com/api.php/v1/ITILCategory/41"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/5"
+      },
+      {
+        "rel": "TicketTemplate",
+        "href": "https://glpi.axionlift.com/api.php/v1/TicketTemplate/5"
+      }
+    ]
+  }
+]
