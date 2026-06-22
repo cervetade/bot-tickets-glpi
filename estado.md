@@ -2,64 +2,59 @@
 
 > **Para Claude / cualquier IA:** este documento es la FUENTE DE VERDAD del proyecto.
 > Si algo acá contradice un audio, nota o archivo más viejo, **vale lo que dice acá**.
-> Última actualización: 2026-06-17
+> Última actualización: 2026-06-19
 
 ---
 
 ## 1. Dónde estamos hoy
 
-- **Fase actual (Proceso Unificado):** análisis / primeros spikes técnicos.
-- **Logro:** spike de LECTURA de la API de GLPI **completo y funcionando**.
-  El bot ya se conecta, autentica, cambia de perfil y lee las categorías dinámicamente,
-  filtradas al área 4.0.
-- **Próximo hito:** spike de POST (crear un ticket de prueba en GLPI).
+- **Fase actual (Proceso Unificado):** análisis / spikes técnicos.
+- **Logro grande:** el **puente completo con GLPI está cerrado**. El bot ya puede:
+  - **LEER** las categorías dinámicamente (filtradas al área 4.0).
+  - **CREAR** tickets vía API (`POST /Ticket`) — probado y funcionando.
+- **Próximo hito:** completar el POST para 4.0 (sumar la ubicación + setear el solicitante),
+  y arrancar con la clasificación por IA.
 
 ---
 
 ## 2. Requerimientos vigentes
 
 - El bot atiende tickets por WhatsApp y los crea en GLPI vía API REST (sin tocar la base de datos).
-- **Alcance: SOLO el área 4.0 (IT y Sistemas).** El bot trabaja únicamente con las categorías que
-  cuelgan de la rama `4.0 > ...`. Las de otros departamentos (Mantenimiento, IAC, Marketing,
-  Diseño 3D, etc.) **NO entran**. Filtro técnico: categorías cuyo nombre completo empieza con "4.0".
-  - Caso aclarado: `4.0 > Impresiones 3D` SÍ va (es parte de 4.0). `Diseño 3D` NO va (rama aparte).
+- **Alcance: SOLO el área 4.0 (IT y Sistemas).** Categorías que cuelgan de `4.0 > ...`.
+  - `4.0 > Impresiones 3D` SÍ va. `Diseño 3D` (rama suelta) NO.
 - Las categorías se consultan dinámicamente desde GLPI, no se hardcodean.
-- El usuario escribe en lenguaje natural; NO elige la categoría (a diferencia del formulario de GLPI).
-  La IA deduce categoría, título y tipo a partir del mensaje.
-- Diseño modular y reutilizable: el filtro por área es parametrizable (`GLPI_AREA_PREFIX`), para poder
-  extenderlo a otras áreas en el futuro si se decide.
+- El usuario escribe en lenguaje natural; NO elige la categoría. La IA deduce categoría, título y tipo.
+- **Excepción:** la **ubicación** sí la aporta el usuario (elige su planta de Axion), porque no se
+  deduce del mensaje ni del perfil. El bot se la va a preguntar (mini-elección dentro del chat).
+- Diseño modular y reutilizable: filtro por área parametrizable (`GLPI_AREA_PREFIX`).
 
 ---
 
 ## 3. Decisiones tomadas (bitácora)
 
+### 2026-06-19 — Entorno de pruebas y categoría de POST
+- **Decisión:** mientras no haya sandbox, los POST de prueba se hacen en el árbol de categorías
+  "Prueba" (creado a mano): id 370 (Prueba), 371 (PruebaBotMantenimiento), 372 (PruebaBot-Impresoras),
+  373 (PruebaBot-Software). Se usa la **372**, que NO asigna a nadie.
+- **Por qué:** crear tickets en categorías de 4.0 los asignaría al equipo real (las reglas asignan por
+  categoría). El árbol "Prueba" evita ensuciar la cola de producción.
+- **Pendiente:** pedir el sandbox al equipo (lo pueden armar) — para la semana que viene.
+
 ### 2026-06-17 — Alcance acotado al área 4.0 (IT/Sistemas)
-- **Decisión:** el bot trabaja SOLO con las categorías del área 4.0. El resto de los departamentos
-  queda fuera del alcance.
-- **Por qué:** es el área que desarrolla el proyecto y donde están las categorías pertinentes (IT y
-  Sistemas). Acotar el alcance también hace más realista la clasificación por IA y el plazo de 2 meses.
-- **Nota:** durante el análisis hubo idas y vueltas sobre esto (se evaluó atender todos los
-  departamentos). Queda CONFIRMADO: solo 4.0. El diseño se deja preparado para extender a otras áreas
-  más adelante (filtro parametrizable), pero NO es alcance actual.
+- **Decisión:** el bot trabaja SOLO con las categorías del área 4.0.
+- **Por qué:** es el área que desarrolla el proyecto y donde están las categorías pertinentes.
+- **Nota:** hubo idas y vueltas (se evaluó atender todos los departamentos). CONFIRMADO: solo 4.0.
 
-### 2026-06-16 — Uso la API legacy de GLPI
-- **Decisión:** conectar el bot por la API legacy (`apirest.php`, initSession + token).
-- **Por qué:** más simple de arrancar y mejor documentada para crear tickets.
-- **Alternativa descartada:** la API nueva (`api.php/v1`, OAuth2). Queda como posible migración futura.
+### 2026-06-16 — API legacy de GLPI
+- **Decisión:** API legacy (`apirest.php`, initSession + token). Alternativa descartada: la nueva (OAuth2).
 
-### 2026-06-16 — Cliente API propio para el bot
-- **Decisión:** creé un cliente API nuevo en GLPI llamado `botapi`, sin restricción de IP
-  (campos IPv4 vacíos), y uso su app_token.
-- **Por qué:** el cliente "full access from localhost" solo acepta llamadas desde el server de GLPI
-  (no sirve corriendo desde mi compu), y el cliente "Axionlift" podía estar en uso por otras
-  integraciones (no conviene regenerarle el token).
-- **Alternativa descartada:** reusar/regenerar tokens de clientes existentes.
+### 2026-06-16 — Cliente API propio (`botapi`)
+- **Decisión:** cliente API propio sin restricción de IP. No usar el de localhost (filtra IP) ni
+  regenerar el de "Axionlift" (puede estar en uso).
 
-### 2026-06-16 — El bot opera con un perfil con permisos
-- **Decisión:** la sesión cambia al perfil Super-Admin (ID 4) tras el login, vía `changeActiveProfile`.
-- **Por qué:** el perfil por defecto (Autoservicio) da 403 al listar categorías; no tiene permisos.
-- **Pendiente:** el perfil DEFINITIVO del bot debe ser de menor privilegio (solo leer categorías/usuarios
-  y crear tickets), por principio de menor privilegio. Super-Admin es solo para explorar.
+### 2026-06-16 — Perfil con permisos
+- **Decisión:** la sesión cambia a Super-Admin (ID 4) con `changeActiveProfile` (el default Autoservicio
+  da 403). **Pendiente:** el bot definitivo debe usar un perfil de menor privilegio.
 
 ---
 
@@ -67,71 +62,78 @@
 
 - **GLPI_URL:** `https://glpi.axionlift.com/apirest.php`
 - **GLPI_APP_TOKEN:** app_token del cliente API `botapi`.
-- **GLPI_USER_TOKEN:** "Token de API" generado en las preferencias del usuario.
-- **GLPI_PROFILE_ID:** `4` (Super-Admin, provisorio para explorar).
-- **GLPI_AREA_PREFIX:** `4.0` (filtra solo el área de IT/Sistemas).
-- Estos valores viven en `.env` (NUNCA se suben al repo; ver `.gitignore`).
-- Scripts: `glpi_client.py` (cliente + lectura de categorías) y `explorar_glpi.py` (explorador GET).
+- **GLPI_USER_TOKEN:** "Token de API" de las preferencias del usuario.
+- **GLPI_PROFILE_ID:** `4` (Super-Admin, provisorio).
+- **GLPI_AREA_PREFIX:** `4.0` (en pruebas se usó `Prueba` para listar las categorías de prueba).
+- Todo en `.env` (NUNCA al repo; ver `.gitignore`).
+- Scripts: `glpi_client.py` (lee categorías), `explorar_glpi.py` (explorador GET),
+  `crear_ticket.py` (POST de prueba), `revisar_plantillas.py` (audita plantillas de 4.0).
 
 ---
 
-## 5. Hallazgos técnicos (de explorar la API)
+## 5. Hallazgos técnicos
 
-- En toda la empresa hay **120 categorías** usables para tickets; el bot trabaja **solo con las del
-  área 4.0** (filtro `startswith("4.0")`).
-- Las categorías están en **árbol jerárquico** (ej. `4.0 > Falla de equipo > Impresora`).
-  → Habilita clasificar en DOS NIVELES (rama → hoja), más preciso que elegir entre muchas de una.
-- El **tipo** de ticket (incidente=1 / solicitud=2) lo determina la categoría (`is_incident` / `is_request`).
-  Una vez elegida la categoría, el tipo casi sale solo.
-- Varias categorías tienen **plantillas** asociadas (`tickettemplates_id_*`), que pueden imponer
-  **campos obligatorios** al crear el ticket. A verificar en el spike de POST.
-- Se descartan las categorías "contenedoras" (nivel 1, sin incidente ni solicitud): no sirven para crear.
+### Categorías
+- 120 categorías usables en toda la empresa; el bot usa **solo las de 4.0** (filtro `startswith("4.0")`).
+- Están en **árbol jerárquico** → conviene clasificar en DOS NIVELES (rama → hoja).
+- El **tipo** (incidente/solicitud) lo determina la categoría (`is_incident` / `is_request`).
 
-### Estructura de un ticket (analizado sobre el Ticket #1234)
-Un ticket tiene ~40 campos, pero el bot manda solo un puñado:
+### Plantillas de 4.0  (hallazgo clave del 2026-06-19)
+- Las **73 categorías de 4.0** usan todas la misma plantilla: **"Plantilla IT & Sistemas" (id 2)**.
+- Esa plantilla marca 4 campos como **OBLIGATORIOS**:
+  1. **Título** (`name`) — ya se manda.
+  2. **Descripción** (`content`) — ya se manda.
+  3. **Categoría** (`itilcategories_id`) — ya se manda.
+  4. **Ubicación** (`locations_id`) — **FALTA**. Es el único campo nuevo a sumar para 4.0.
+- La **ubicación** la elige el usuario (su planta de Axion). Es un `Location` (id numérico); las
+  opciones se listan con un GET de `Location`. El bot se la va a preguntar.
+- (La categoría de prueba 372 usa la plantilla "Default", sin obligatorios — por eso el POST mínimo
+  funcionó ahí. En 4.0 hay que sumar la ubicación.)
 
-- **El bot SÍ manda:** `name` (título), `content` (descripción, se guarda como HTML),
-  `itilcategories_id` (categoría), `type` (incidente/solicitud).
-- **Opcionales que el bot puede mandar:** `entities_id`, `urgency`, `impact`,
-  `requesttypes_id` (canal), `locations_id`.
-- **Lo completa GLPI solo (NO mandar):** `id`, fechas, `status` (al crear queda "nuevo"),
-  `priority` (la calcula con urgency × impact), SLAs/OLAs, estadísticas.
-- **El solicitante es relacional**, no un campo simple: vive en `Ticket_User`.
-  `users_id_recipient` = quién REGISTRA el ticket (será la cuenta del bot).
-  El `requester` (el empleado que escribió por WhatsApp) se setea aparte al crear.
-
-### Flujo mensaje → ticket (el "traductor")
-El usuario aporta solo: su **mensaje** en lenguaje natural (+ su número de teléfono, que viene solo
-con WhatsApp; + adjuntos opcionales). El bot fabrica el resto:
-- mensaje → IA resume → `name`
-- mensaje (tal cual) → `content`
-- mensaje → IA clasifica → `itilcategories_id` (solo entre las categorías de 4.0)
-- categoría → `type`
-- número de teléfono → identificación → `requester`
+### Anatomía del POST (probado el 2026-06-19, ticket de prueba creado OK)
+- **El bot manda:** `name`, `content`, `itilcategories_id`, `type` (+ `locations_id` para 4.0).
+- **GLPI completa solo:** `id`, fechas, `status` (queda "nuevo"), `priority` (calcula urgency × impact),
+  SLAs, estadísticas. Confirmado: las reglas se aplican a tickets creados por API.
+- **El `content` se guarda como HTML.** En la prueba se mandó texto plano (funciona); para producción
+  conviene envolverlo en HTML.
+- **El solicitante (`requester`) es relacional** (`Ticket_User`), no un campo simple. En la prueba no se
+  seteó (quedó la cuenta de la sesión como quien registra). Falta probar setearlo.
 
 ---
 
 ## 6. Pendientes / temas abiertos
 
-- **Spike de POST:** crear un ticket de prueba (próximo paso). Verificar campos obligatorios por plantilla.
-- **Identificación del usuario:** mapear número de teléfono → usuario de GLPI/AD.
-  Plan B si no hay match: preguntar nombre y área. (Desafío central.)
-- **Diseño de la clasificación por IA:** empezar simple (LLM tipo Gemini + lista de categorías de 4.0,
-  clasificación en dos niveles). Usar tickets históricos como ejemplos y, sobre todo, como banco de
-  pruebas para MEDIR la precisión. Plan B para casos dudosos: confirmar con el usuario o categoría
-  "sin clasificar" para revisión humana. No hace falta entrenar un modelo desde cero.
-- **Perfil definitivo del bot** (menor privilegio).
-- **Adjuntos (fotos/PDF):** segunda etapa. En GLPI son "Documentos" (`Document` / `Document_Item`):
-  hay que bajar el archivo de WhatsApp, subirlo a GLPI y asociarlo al ticket.
-- **Idea de trazabilidad:** crear un `requesttypes_id` propio tipo "WhatsApp Bot" para identificar
-  los tickets creados por el bot.
+- **Completar el POST para 4.0:** sumar `locations_id` (ubicación) y probar setear el **solicitante**.
+- **Analizar el formulario de 4.0** (`formularioSistemas4_0.json`, exportado de GLPI) para entender la
+  lógica completa: qué pregunta, cómo mapea a campos del ticket, qué destino arma.
+- **Ubicación:** GET de `Location` para ver las plantas y armar las opciones que el bot ofrece.
+- **Identificación del usuario:** mapear número de teléfono → usuario de GLPI/AD (plan B: preguntar).
+- **Clasificación por IA:** empezar simple (LLM + categorías de 4.0, dos niveles). Usar tickets
+  históricos como banco de pruebas para medir precisión. Plan B para dudas: confirmar con el usuario.
+- **Entrada por WhatsApp:** webhook FastAPI + Meta Cloud API.
+- **Sandbox:** pedirlo al equipo (semana que viene).
+- **Perfil de menor privilegio** para el bot definitivo.
+- **Adjuntos (fotos/PDF):** segunda etapa (`Document` / `Document_Item`).
+- **Trazabilidad:** crear un `requesttypes_id` "WhatsApp Bot".
 
 ---
 
 ## 7. Cosas que YA descarté (no proponer de nuevo)
 
 - Tocar la base de datos MariaDB directamente → NO, solo vía API REST.
-- Atender todos los departamentos → NO, el alcance es SOLO el área 4.0 (IT/Sistemas).
-- Que el usuario elija la categoría como en el formulario de GLPI → NO, la deduce la IA.
-- Usar el app_token del cliente "full access from localhost" → NO sirve corriendo fuera del server.
-- Subir `.env` o archivos con datos internos (.txt de respuestas) al repo público → NO.
+- Atender todos los departamentos → NO, solo el área 4.0 (IT/Sistemas).
+- Que el usuario elija la categoría como en el formulario → NO, la deduce la IA (pero la ubicación SÍ
+  la elige el usuario).
+- Postear de prueba en categorías de 4.0 → NO (se asignan al equipo real); usar el árbol "Prueba".
+- Usar el app_token del cliente "full access from localhost" → NO sirve fuera del server.
+- Subir `.env` o archivos con datos internos al repo público → NO.
+
+---
+
+## 8. Documentación del proyecto
+
+- `estado.md` — este documento (decisiones, estado, hallazgos).
+- `analisis_api_glpi.md` — resultados de la exploración GET y deducciones de diseño.
+- `anexo_ejecucion.md` — registro de salidas de los scripts (anonimizado).
+- `README.md` — qué es el proyecto y cómo correrlo.
+- Repo: github.com/cervetade/bot-tickets-glpi (público; `.env` y datos internos quedan fuera).
