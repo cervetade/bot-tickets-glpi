@@ -99,6 +99,23 @@ class GLPIClient:
                 "visible_helpdesk": bool(c.get("is_helpdeskvisible", 0)),
             })
         return out
+    def listar_items(self, itemtype, limite=200):
+        """
+        Trae los registros de un dropdown de GLPI (ej. 'PrinterModel', 'Location',
+        'User') para ofrecerlos como opciones CERRADAS. Devuelve [{id, nombre}].
+        """
+        r = self._http.get(
+            f"{self.base_url}/{itemtype}",
+            headers=self._headers(),
+            params={"range": f"0-{limite}", "expand_dropdowns": "true"},
+        )
+        r.raise_for_status()
+        out = []
+        for it in r.json():
+            nombre = (it.get("completename") or it.get("name")
+                      or it.get("realname") or str(it.get("id")))
+            out.append({"id": it["id"], "nombre": nombre})
+        return out
 
     def kill_session(self):
         if self.session_token:
@@ -130,3 +147,5 @@ if __name__ == "__main__":
             print("Proba dejando GLPI_AREA_PREFIX vacio en el .env para ver todas.")
     finally:
         glpi.kill_session()
+
+    

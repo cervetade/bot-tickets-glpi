@@ -1,0 +1,1018 @@
+{
+  "pregunta_inicial": "¿Motivo de su ticket?",
+  "motivos_posibles": {
+    "1": "Instalación / configuración de programa / aplicación / servicio",
+    "2": "Cambio de tóner",
+    "3": "Solicitar cuenta / licencia de programa / servicio",
+    "4": "Permisos de acceso a servicio / servidor",
+    "5": "Información / capacitación",
+    "6": "Mover un equipo de lugar físico",
+    "7": "Solicitud de equipo o insumos",
+    "8": "Alta, baja o movimiento de personal",
+    "9": "Mejora de equipo",
+    "10": "Restablecer contraseña",
+    "11": "Falla en uno de mis dispositivos",
+    "12": "Falla de programa / servicio / servidor"
+  },
+  "preguntas_siempre": [
+    {
+      "texto": "Lugar en dónde te encuentras",
+      "obligatoria": true,
+      "tipo": "lista_glpi",
+      "fuente_glpi": "Location"
+    },
+    {
+      "texto": "Escribe un detalle que nos ayude a comprender tu solicitud.",
+      "obligatoria": true,
+      "tipo": "texto_largo"
+    },
+    {
+      "texto": "Archivo adjunto",
+      "obligatoria": false,
+      "tipo": "archivo",
+      "se_muestra_si": {
+        "pregunta": "Escribe un detalle que nos ayude a comprender tu solicitud.",
+        "respuesta": "(una vez respondida)"
+      }
+    }
+  ],
+  "motivos": {
+    "1": {
+      "nombre": "Instalación / configuración de programa / aplicación / servicio",
+      "preguntas": [
+        {
+          "texto": "¿Qué necesita Instalar/configurar?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Netsuite",
+            "TeamCenter",
+            "Impresora",
+            "VPN",
+            "Cámaras",
+            "Power BI",
+            "Aplicación Android",
+            "Aplicación Tótem",
+            "Celular",
+            "GLPI",
+            "Metabase",
+            "Otro programa / servicio"
+          ]
+        },
+        {
+          "texto": "¿Qué desea realizar?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Configurar",
+            "Instalar"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Netsuite"
+          }
+        },
+        {
+          "texto": "¿Qué versión de TeamCenter?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Cliente",
+            "Web"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "TeamCenter"
+          }
+        },
+        {
+          "texto": "Elige impresora",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "PrinterModel",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Impresora"
+          }
+        },
+        {
+          "texto": "En que lugar se encuentran las cámaras",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Axion 1",
+            "Axion 2",
+            "Axion 3",
+            "InnovAx",
+            "Axion Nqn",
+            "Axion Bs As",
+            "Otro"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Cámaras"
+          }
+        },
+        {
+          "texto": "Nombre de la Aplicación",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Aplicación Tótem"
+          }
+        },
+        {
+          "texto": "¿En dónde se encuentra el tótem?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Axion 1",
+            "Axion 2",
+            "Axion 3"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Aplicación Tótem"
+          }
+        },
+        {
+          "texto": "Escribe el número del tótem",
+          "obligatoria": true,
+          "tipo": "numero",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Aplicación Tótem"
+          }
+        },
+        {
+          "texto": "Nombre del programa / servicio",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Otro programa / servicio"
+          }
+        },
+        {
+          "texto": "ID de Anydesk:",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Netsuite"
+          }
+        },
+        {
+          "texto": "¿En qué momento podemos conectarnos?",
+          "obligatoria": false,
+          "tipo": "fecha",
+          "se_muestra_si": {
+            "pregunta": "ID de Anydesk:",
+            "respuesta": "(una vez respondida)"
+          }
+        },
+        {
+          "texto": "Detalle la estadística que quiere obtener",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Metabase"
+          }
+        },
+        {
+          "texto": "¿En qué momento podemos reunirnos?",
+          "obligatoria": true,
+          "tipo": "fecha",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Metabase"
+          }
+        },
+        {
+          "texto": "Hora",
+          "obligatoria": true,
+          "tipo": "fecha",
+          "se_muestra_si": {
+            "pregunta": "¿Qué necesita Instalar/configurar?",
+            "respuesta": "Metabase"
+          }
+        }
+      ]
+    },
+    "2": {
+      "nombre": "Cambio de tóner",
+      "preguntas": [
+        {
+          "texto": "Elige impresora",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "PrinterModel"
+        },
+        {
+          "texto": "¿Qué color de tóner?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Negro",
+            "Magenta",
+            "Amarillo",
+            "Cian"
+          ],
+          "se_muestra_si": {
+            "pregunta": "Elige impresora",
+            "respuesta": "(una vez respondida)"
+          }
+        }
+      ]
+    },
+    "3": {
+      "nombre": "Solicitar cuenta / licencia de programa / servicio",
+      "preguntas": [
+        {
+          "texto": "¿En que programa / servicio necesita cuenta / licencia?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "GLPI",
+            "Netsuite",
+            "Licencia de activación de Windows",
+            "Active Directory (usuario de Windows)",
+            "Google (Gmail / Drive)",
+            "TeamCenter",
+            "SolidEdge",
+            "SolidWorks",
+            "Otro programa / servicio"
+          ]
+        },
+        {
+          "texto": "Nombre del programa / servicio",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿En que programa / servicio necesita cuenta / licencia?",
+            "respuesta": "Otro programa / servicio"
+          }
+        }
+      ]
+    },
+    "4": {
+      "nombre": "Permisos de acceso a servicio / servidor",
+      "preguntas": [
+        {
+          "texto": "¿En dónde necesita permiso?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Netsuite",
+            "Servidor de archivos",
+            "Bitwarden",
+            "CRM",
+            "Habilitar puertos USB",
+            "VPN",
+            "Otro"
+          ]
+        },
+        {
+          "texto": "¿Qué módulo de Netsuite?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Compra",
+            "Venta",
+            "Producción",
+            "Recursos Humanos",
+            "Pagos",
+            "Inventario",
+            "Finanzas"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde necesita permiso?",
+            "respuesta": "Netsuite"
+          }
+        },
+        {
+          "texto": "¿En qué servidor?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "SRV-FS (H:)",
+            "Srv PLM (192.168.50.206)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde necesita permiso?",
+            "respuesta": "Servidor de archivos"
+          }
+        },
+        {
+          "texto": "¿Qué carpeta en SRV-FS?",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "SoftwareCategory",
+          "se_muestra_si": {
+            "pregunta": "¿En qué servidor?",
+            "respuesta": "SRV-FS (H:)"
+          }
+        },
+        {
+          "texto": "¿Qué carpeta en Srv PLM?",
+          "obligatoria": true,
+          "tipo": "opciones_multiple",
+          "opciones": [
+            "-Dibujos",
+            "-i-d",
+            "-InnovAx-PLM",
+            "-mtm",
+            "-PDF_Proveedores",
+            "-Otra carpeta"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué servidor?",
+            "respuesta": "SRV-FS (H:)"
+          }
+        },
+        {
+          "texto": "¿Qué tipo de permiso?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Solo lectura",
+            "Lectura y escritura"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué servidor?",
+            "respuesta": "SRV-FS (H:)"
+          }
+        },
+        {
+          "texto": "¿A qué necesita acceso?",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿En dónde necesita permiso?",
+            "respuesta": "Otro"
+          }
+        }
+      ]
+    },
+    "5": {
+      "nombre": "Información / capacitación",
+      "preguntas": [],
+      "sin_preguntas_extra": true
+    },
+    "6": {
+      "nombre": "Mover un equipo de lugar físico",
+      "preguntas": [],
+      "sin_preguntas_extra": true
+    },
+    "7": {
+      "nombre": "Solicitud de equipo o insumos",
+      "preguntas": [
+        {
+          "texto": "¿Qué elemento necesita?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Mouse",
+            "Teclado",
+            "Auriculares",
+            "Base de Notebook",
+            "Cargador de Notebook",
+            "Cargador de Celular",
+            "Cable / adaptador",
+            "Estabilizador",
+            "Webcam",
+            "Celular",
+            "Computadora",
+            "Otro"
+          ]
+        },
+        {
+          "texto": "¿Necesita una nueva Línea?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si",
+            "No"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué elemento necesita?",
+            "respuesta": "Celular"
+          }
+        },
+        {
+          "texto": "¿Con qué código de área?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "03564",
+            "0299",
+            "011",
+            "Otro"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Necesita una nueva Línea?",
+            "respuesta": "Si"
+          }
+        },
+        {
+          "texto": "Escribe el código de área",
+          "obligatoria": true,
+          "tipo": "numero",
+          "se_muestra_si": {
+            "pregunta": "¿Con qué código de área?",
+            "respuesta": "Otro"
+          }
+        },
+        {
+          "texto": "¿El puesto necesita movilidad?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si necesita movilidad",
+            "No necesita movilidad"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué elemento necesita?",
+            "respuesta": "Computadora"
+          }
+        },
+        {
+          "texto": "¿Qué uso tendría la computadora?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Tareas básicas (Ofice/Coliseo)",
+            "Tareas Avanzadas (TeamCenter Cliente)",
+            "Diseño (SolidEdge/SolidWorks)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué elemento necesita?",
+            "respuesta": "Computadora"
+          }
+        },
+        {
+          "texto": "¿Qué tipo de cargador?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Micro-USB (ficha vieja)",
+            "Tipo C (ficha nueva)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué elemento necesita?",
+            "respuesta": "Cargador de Celular"
+          }
+        }
+      ]
+    },
+    "8": {
+      "nombre": "Alta, baja o movimiento de personal",
+      "preguntas": [
+        {
+          "texto": "¿Alta, baja o movimiento interno?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Alta de personal",
+            "Baja de personal",
+            "Movimiento interno"
+          ]
+        },
+        {
+          "texto": "Nombre completo del ingresante",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Alta de personal"
+          }
+        },
+        {
+          "texto": "¿Quién sería el coordinador / responsable directo?",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Alta de personal"
+          }
+        },
+        {
+          "texto": "¿Conoce la fecha estimada de ingreso?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si",
+            "No"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Alta de personal"
+          }
+        },
+        {
+          "texto": "Fecha de ingreso estimada",
+          "obligatoria": true,
+          "tipo": "fecha"
+        },
+        {
+          "texto": "¿En qué lugar trabajaría?",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "Location",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Alta de personal"
+          }
+        },
+        {
+          "texto": "Área a la cual pertenecería",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "Group",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Alta de personal"
+          }
+        },
+        {
+          "texto": "¿Qué va a necesitar?",
+          "obligatoria": true,
+          "tipo": "opciones_multiple",
+          "opciones": [
+            "Celular",
+            "Computadora",
+            "Cuenta de Mail",
+            "Cuenta de Windows",
+            "Cuenta de Netsuite",
+            "Cuenta de Teamcenter-SolidEdge"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Alta de personal"
+          }
+        },
+        {
+          "texto": "¿Necesita una nueva línea?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si",
+            "No"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué va a necesitar?",
+            "respuesta": "Celular"
+          }
+        },
+        {
+          "texto": "¿Con qué código de área?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "03564",
+            "0299",
+            "011",
+            "Otro"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Necesita una nueva línea?",
+            "respuesta": "Si"
+          }
+        },
+        {
+          "texto": "Escribe el código de área",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Con qué código de área?",
+            "respuesta": "Otro"
+          }
+        },
+        {
+          "texto": "¿Qué uso tendría la computadora?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Tareas básicas (Ofice/Coliseo)",
+            "Tareas Avanzadas (TeamCenter Cliente)",
+            "Diseño (SolidEdge/SolidWorks)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué va a necesitar?",
+            "respuesta": "Computadora"
+          }
+        },
+        {
+          "texto": "¿El puesto necesita movilidad?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si necesita movilidad",
+            "No necesita movilidad"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué va a necesitar?",
+            "respuesta": "Computadora"
+          }
+        },
+        {
+          "texto": "¿Necesita acceso a documentos compartidos en Drive?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si",
+            "No"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Qué va a necesitar?",
+            "respuesta": "Cuenta de Mail"
+          }
+        },
+        {
+          "texto": "Elige usuario que se da de baja",
+          "obligatoria": false,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "User",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Baja de personal"
+          }
+        },
+        {
+          "texto": "¿Qué uso tendrían sus elementos de trabajo?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Se asignarían al usuario que reemplazaría el puesto",
+            "Quedan a disposición de 4.0 para su asignación",
+            "Todavía no está definido (debe actualizar mas adelante)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Baja de personal"
+          }
+        },
+        {
+          "texto": "Nombre de usuario a quien se asignarían sus elementos de trabajo",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Qué uso tendrían sus elementos de trabajo?",
+            "respuesta": "Se asignarían al usuario que reemplazaría el puesto"
+          }
+        },
+        {
+          "texto": "Elige usuario que se movería",
+          "obligatoria": false,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "User",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Movimiento interno"
+          }
+        },
+        {
+          "texto": "¿En qué lugar trabajaría?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Axion 1",
+            "Axion 2",
+            "Axion 3",
+            "InnovAx",
+            "Axion Bs As",
+            "Axion Nqn",
+            "Externo"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Movimiento interno"
+          }
+        },
+        {
+          "texto": "Área a la cual pertenecería",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "Group",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Movimiento interno"
+          }
+        },
+        {
+          "texto": "¿A qué usuario se le deben transferir sus archivos?",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Baja de personal"
+          }
+        }
+      ]
+    },
+    "9": {
+      "nombre": "Mejora de equipo",
+      "preguntas": [
+        {
+          "texto": "Seleccione el equipo que desea mejorar",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Computadora",
+            "Celular"
+          ]
+        },
+        {
+          "texto": "¿Por qué motivo necesita mejora?",
+          "obligatoria": true,
+          "tipo": "opciones_multiple",
+          "opciones": [
+            "Necesito mas espacio para guardar mis datos",
+            "No responde cuando tengo varios programas abiertos",
+            "Funciona muy lento, tarda en iniciar",
+            "El rendimiento gráfico con programas de diseño es insuficiente"
+          ],
+          "se_muestra_si": {
+            "pregunta": "Seleccione el equipo que desea mejorar",
+            "respuesta": "Computadora"
+          }
+        }
+      ]
+    },
+    "10": {
+      "nombre": "Restablecer contraseña",
+      "preguntas": [
+        {
+          "texto": "¿Que contraseña necesita restablecer?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Gmail / Google",
+            "Windows / GLPI",
+            "Netsuite",
+            "CRM"
+          ]
+        },
+        {
+          "texto": "¿Para qué usuario?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Para mi cuenta",
+            "Para otro usuario"
+          ]
+        },
+        {
+          "texto": "Nombra el usuario",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Para qué usuario?",
+            "respuesta": "Para otro usuario"
+          }
+        }
+      ]
+    },
+    "11": {
+      "nombre": "Falla en uno de mis dispositivos",
+      "preguntas": [
+        {
+          "texto": "¿En qué dispositivo tiene la falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Celular / Tablet",
+            "Teléfono fijo",
+            "Computadora",
+            "Impresora",
+            "Periférico (mouse, teclado, etc)",
+            "Auriculares",
+            "Tótem",
+            "Otro"
+          ]
+        },
+        {
+          "texto": "Seleccione impresora",
+          "obligatoria": true,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "PrinterModel",
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Impresora"
+          }
+        },
+        {
+          "texto": "Seleccione periférico",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Monitor",
+            "Mouse",
+            "Teclado",
+            "Cargador de celular",
+            "Cargador de notebook",
+            "Estabilizador",
+            "Auriculares",
+            "Otro"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Periférico (mouse, teclado, etc)"
+          }
+        },
+        {
+          "texto": "¿Qué periférico tiene fallas?",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "Seleccione periférico",
+            "respuesta": "Otro"
+          }
+        },
+        {
+          "texto": "¿Quién tiene la falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Solo yo",
+            "Todos (falla general)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Teléfono fijo"
+          }
+        },
+        {
+          "texto": "¿Quién tiene la falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Yo",
+            "Otro usuario"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Computadora"
+          }
+        },
+        {
+          "texto": "Seleccione usuario",
+          "obligatoria": false,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "User",
+          "se_muestra_si": {
+            "pregunta": "¿Quién tiene la falla?",
+            "respuesta": "Otro usuario"
+          }
+        },
+        {
+          "texto": "Tipo de falla",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Conexión a internet",
+            "No funciona una aplicación",
+            "Sincronización de hora",
+            "Error de Imagen",
+            "No enciende",
+            "Falla de pantalla táctil"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Tótem"
+          }
+        },
+        {
+          "texto": "En donde se encuentra el tótem",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Axion 1",
+            "Axion 2",
+            "Axion 3"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Tótem"
+          }
+        },
+        {
+          "texto": "Escribe el número del tótem",
+          "obligatoria": true,
+          "tipo": "numero",
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Tótem"
+          }
+        }
+      ]
+    },
+    "12": {
+      "nombre": "Falla de programa / servicio / servidor",
+      "preguntas": [
+        {
+          "texto": "¿En dónde tiene la falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Conexión a internet",
+            "Servidor de archivos",
+            "NetSuite",
+            "TeamCenter / SolidEdge",
+            "GLPI",
+            "CRM",
+            "CAS / GAC",
+            "Lector de PDF",
+            "Servicios de Google (Gmail / Drive)",
+            "Otro Programa / Aplicación / Servicio"
+          ]
+        },
+        {
+          "texto": "Elige el servidor",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Srv-PLM (192.168.50.8)",
+            "SRV-FS (H:)"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Servidor de archivos"
+          }
+        },
+        {
+          "texto": "¿Quién tiene la falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Falla general (a todos)",
+            "Falla local (solo a mi)",
+            "Falla a otro usuario"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Conexión a internet"
+          }
+        },
+        {
+          "texto": "Seleccione usuario",
+          "obligatoria": false,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "User",
+          "se_muestra_si": {
+            "pregunta": "¿Quién tiene la falla?",
+            "respuesta": "Falla a otro usuario"
+          }
+        },
+        {
+          "texto": "¿Qué tipo de falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Facturación",
+            "Transacción",
+            "Conexión",
+            "Impresión"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Conexión a internet"
+          }
+        },
+        {
+          "texto": "ID de Anydesk:",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Servidor de archivos"
+          }
+        },
+        {
+          "texto": "¿Es un problema sobre nombres de usuarios que ya no están en la empresa?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Si",
+            "No"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Servicios de Google (Gmail / Drive)"
+          }
+        },
+        {
+          "texto": "Nombre del programa/aplicación/servicio con el que tiene problemas",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Otro Programa / Aplicación / Servicio"
+          }
+        }
+      ]
+    }
+  }
+}
