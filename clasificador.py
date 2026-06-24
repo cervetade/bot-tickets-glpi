@@ -32,6 +32,16 @@ load_dotenv()
 
 MODELO = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
+# Modelos a probar en orden: si el primero está saturado (503) o sin cupo (429),
+# se salta al siguiente. El cupo gratis es POR MODELO, así que esto suma pedidos.
+# (Familia 2.5, donde temperature=0 es válida.)
+MODELOS_FALLBACK = [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-3.1-flash-lite",   # familia 3.x: cada modelo tiene su propio cupo gratis
+    "gemini-3.5-flash",
+]
+
 
 INSTRUCCION_CLASIFICAR = """\
 Sos un clasificador de tickets de soporte de IT (área "4.0").
@@ -59,11 +69,13 @@ Reglas:
 
 Slots CERRADOS (los que tienen "opciones"):
 - El valor DEBE ser EXACTAMENTE una de las opciones (copiala tal cual).
-- Al preguntar, ofrecé las opciones.
-- Si el usuario no sabe cuál es, mostrale las opciones; si aun así no sabe, poné
-  el valor "SIN IDENTIFICAR".
-- Si el usuario dice que el problema afecta a TODOS o es general, no elijas un
-  item: poné el valor "FALLA GENERAL".
+- Cuando preguntes por un slot cerrado, NO escribas vos la lista de opciones:
+  poné en "slot_preguntado" el "texto" exacto de ese slot; el sistema le muestra
+  la lista al usuario. La "siguiente_pregunta" puede ser breve (ej. "¿Cuál es?").
+- El usuario puede responder con el NÚMERO o el NOMBRE de una opción; en "datos"
+  devolvé SIEMPRE el nombre exacto.
+- Si el usuario no sabe cuál es, poné el valor "SIN IDENTIFICAR".
+- Si el problema afecta a TODOS o es general, poné el valor "FALLA GENERAL".
 - NUNCA inventes una opción que no esté en la lista.
 
 Cuando tengas todos los datos OBLIGATORIOS que aplican, poné "listo": true,
@@ -71,7 +83,7 @@ devolvé "datos" (lo recolectado) y un "resumen" de una línea para confirmar.
 NO decidas urgencia ni prioridad.
 
 Respondé SOLO con un JSON:
-{"listo": <bool>, "siguiente_pregunta": <str|null>,
+{"listo": <bool>, "siguiente_pregunta": <str|null>, "slot_preguntado": <str|null>,
  "datos": <object>, "resumen": <str|null>}
 """
 
@@ -87,24 +99,80 @@ def _cliente():
     return genai.Client(api_key=api_key)
 
 
-def _generar(prompt, instruccion_sistema, intentos=4):
-    """Llama a Gemini pidiendo JSON, con reintentos ante errores transitorios."""
-    for i in range(intentos):
-        try:
-            resp = _cliente().models.generate_content(
-                model=MODELO,
-                contents=prompt,
-                config=types.GenerateContentConfig(
+def _generar(prompt, instruccion_sistema, reintentos=2):
+    """
+    Pide JSON a Gemini. Si un modelo está saturado (503) o sin cupo (429),
+    reintenta unas veces y, si sigue fallando, prueba el siguiente modelo.
+    """
+    modelos, vistos = [], set()
+    for m in [MODELO] + MODELOS_FALLBACK:
+        if m and m not in vistos:
+            vistos.add(m)
+            modelos.append(m)
+
+    ultimo = None
+    for pos, modelo in enumerate(modelos):
+        for i in range(reintentos):
+            try:
+                # Gemini 3.x recomienda NO tocar temperature; en 2.x la fijamos en 0.
+                cfg = dict(
                     system_instruction=instruccion_sistema,
-                    temperature=0,  # determinista. (Para Gemini 3.x: borrá esta línea.)
                     response_mime_type="application/json",
-                ),
-            )
-            return json.loads(resp.text)
-        except errors.ServerError:
-            if i == intentos - 1:
-                raise
-            time.sleep(2 * (i + 1))
+                )
+                if modelo.startswith("gemini-2"):
+                    cfg["temperature"] = 0
+                resp = _cliente().models.generate_content(
+                    model=modelo,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(**cfg),
+                )
+                return json.loads(resp.text)
+            except errors.ServerError as e:   # 503 saturado -> esperar y reintentar
+                ultimo = e
+                time.sleep(2 * (i + 1))
+            except errors.ClientError as e:    # 429 sin cupo / modelo no disponible
+                ultimo = e
+                break  # no insistas con este modelo, pasá al siguiente
+        if pos + 1 < len(modelos):
+            print(f"  (Gemini: {modelo} no disponible, probando otro modelo...)")
+
+    raise RuntimeError(
+        "Gemini no respondió con ningún modelo (saturado o sin cupo). "
+        "Esperá un momento y reintentá, o activá billing para subir los topes."
+    ) from ultimo
+
+
+INSTRUCCION_INTENCION = """\
+Sos el FILTRO DE ENTRADA de un bot que SOLO sirve para crear tickets de soporte
+de IT (área "4.0"). No respondés dudas, no mostrás datos del sistema, no buscás
+tickets: tu única tarea es clasificar el mensaje del usuario en una intención.
+
+Intenciones posibles:
+- "saludo"   : saludos, agradecimientos o charla sin un problema concreto
+               (ej. "hola", "gracias", "buenas", "genial").
+- "problema" : el usuario reporta un inconveniente de IT reportable como ticket
+               (ej. "no anda la impresora", "necesito que me instalen Office").
+- "pregunta" : una duda sobre el sistema o sobre cómo usar el bot, sin reportar
+               un problema (ej. "qué categorías hay", "mostrame mi ticket").
+- "fuera"    : algo que no tiene que ver con soporte de IT.
+
+Ante la duda entre "problema" y otra, elegí "problema" solo si hay un
+inconveniente concreto que se pueda cargar como ticket.
+
+Respondé SOLO con un JSON:
+{"intencion": "saludo|problema|pregunta|fuera", "respuesta_sugerida": <str>}
+Donde "respuesta_sugerida" es una frase corta y amable para contestarle al
+usuario SOLO si la intención no es "problema" (si es "problema", dejala vacía).
+"""
+
+
+def clasificar_intencion(mensaje):
+    """
+    El "portero": decide si el mensaje es un saludo, un problema reportable, una
+    pregunta sobre el sistema, o algo fuera de alcance. Devuelve un dict:
+        {"intencion": "saludo|problema|pregunta|fuera", "respuesta_sugerida": str}
+    """
+    return _generar(f'Mensaje del usuario:\n"{mensaje.strip()}"', INSTRUCCION_INTENCION)
 
 
 def clasificar(mensaje, categorias, motivos):
@@ -154,6 +222,11 @@ def _preparar_rama(rama, opciones_glpi):
     return rama2, cerrados
 
 
+def _opciones_numeradas(opciones):
+    """Lista numerada de opciones para mostrarle al usuario."""
+    return "\n".join(f"{i}. {o}" for i, o in enumerate(opciones, 1))
+
+
 def relevar(rama, historial, opciones_glpi=None):
     """
     rama          : fragmento de formulario_guia.json del motivo detectado.
@@ -168,30 +241,51 @@ def relevar(rama, historial, opciones_glpi=None):
         f"CONVERSACIÓN hasta ahora:\n{conversacion}"
     )
     r = _generar(prompt, INSTRUCCION_RELEVAR)
-
-    # --- Validación determinista de los slots cerrados ---
+    datos = r.get("datos") or {}
     especiales = {"sin identificar", "falla general"}
-    if r.get("listo") and cerrados:
-        datos = r.get("datos") or {}
-        for slot, permitido in cerrados.items():
-            val = datos.get(slot)
-            if val is None:
+
+    # --- Normalizar y validar los slots cerrados que haya en 'datos' ---
+    rechazo = None
+    for slot, permitido in cerrados.items():
+        val = datos.get(slot)
+        if val is None:
+            continue
+        clave = str(val).strip().casefold()
+        if clave in especiales:
+            continue
+        ordenadas = list(permitido.values())
+        # si respondió con un número, lo mapeamos a la opción correspondiente
+        if str(val).strip().isdigit():
+            idx = int(str(val).strip()) - 1
+            if 0 <= idx < len(ordenadas):
+                datos[slot] = ordenadas[idx]
                 continue
-            clave = str(val).strip().casefold()
-            if clave in especiales:
-                continue
-            canon = permitido.get(clave)
-            if canon is None:
-                # La IA devolvió algo que NO está en la lista real -> rechazamos.
-                muestra = ", ".join(list(permitido.values())[:12])
-                r["listo"] = False
-                r["siguiente_pregunta"] = (
-                    f'Para "{slot}" tenés que elegir una de la lista. '
-                    f'Opciones: {muestra}. Si no sabés cuál es, escribí "no sé".'
-                )
-                datos.pop(slot, None)
-                break
-            datos[slot] = canon  # guardamos el nombre exacto de GLPI
+        canon = permitido.get(clave)
+        if canon is None:
+            datos.pop(slot, None)          # valor inventado -> lo descartamos
+            rechazo = (slot, val)
+        else:
+            datos[slot] = canon            # guardamos el nombre exacto de GLPI
+
+    if rechazo:
+        slot, val = rechazo
+        r["listo"] = False
+        r["slot_preguntado"] = slot
+        r["siguiente_pregunta"] = f'No encontré "{val}" en la lista. Elegí una de estas:'
+
+    # --- Si estamos preguntando por un slot cerrado, mostramos las opciones reales ---
+    if not r.get("listo"):
+        slot = r.get("slot_preguntado")
+        if slot not in cerrados:
+            # fallback: detectar un slot cerrado nombrado en la pregunta
+            sp = (r.get("siguiente_pregunta") or "").casefold()
+            slot = next((s for s in cerrados if s.casefold() in sp), None)
+        if slot in cerrados:
+            base = r.get("siguiente_pregunta") or f"{slot}:"
+            r["siguiente_pregunta"] = (
+                f"{base}\n{_opciones_numeradas(list(cerrados[slot].values()))}\n"
+                '(Respondé con el número o el nombre. Si no sabés, escribí "no sé".)'
+            )
     return r
 
 

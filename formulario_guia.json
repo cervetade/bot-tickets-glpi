@@ -967,27 +967,21 @@
           }
         },
         {
-          "texto": "¿Qué tipo de falla?",
-          "obligatoria": true,
-          "tipo": "opciones",
-          "opciones": [
-            "Facturación",
-            "Transacción",
-            "Conexión",
-            "Impresión"
-          ],
-          "se_muestra_si": {
-            "pregunta": "¿En dónde tiene la falla?",
-            "respuesta": "Conexión a internet"
-          }
-        },
-        {
           "texto": "ID de Anydesk:",
           "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿En dónde tiene la falla?",
             "respuesta": "Servidor de archivos"
+          }
+        },
+          {
+          "texto": "ID de Anydesk:",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "TeamCenter / SolidEdge"
           }
         },
         {
