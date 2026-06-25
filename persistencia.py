@@ -43,6 +43,7 @@ ESTADOS = (
     "identificacion",
     "pedir_datos",
     "esperar_descripcion",
+    "esperar_lugar",
     "esperar_confirmacion",
     "procesando",
     "error",
@@ -72,6 +73,7 @@ def init_db():
                 usuario_planta  TEXT,
                 motivo          INTEGER,
                 categoria_glpi  INTEGER,
+                titulo          TEXT,
                 descripcion     TEXT,
                 datos           TEXT,
                 historial       TEXT,
@@ -80,6 +82,10 @@ def init_db():
                 actualizado_en  TEXT NOT NULL
             )
         """)
+        # Migración: sumar columnas nuevas si la tabla ya existía sin ellas.
+        cols = {row[1] for row in con.execute("PRAGMA table_info(conversaciones)")}
+        if "titulo" not in cols:
+            con.execute("ALTER TABLE conversaciones ADD COLUMN titulo TEXT")
 
 
 def _ahora():
