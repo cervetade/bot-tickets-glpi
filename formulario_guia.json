@@ -69,7 +69,7 @@
           ],
           "se_muestra_si": {
             "pregunta": "¿Qué necesita Instalar/configurar?",
-            "respuesta": "Netsuite"
+            "respuesta": "TeamCenter"
           }
         },
         {
@@ -78,7 +78,7 @@
           "tipo": "opciones",
           "opciones": [
             "Cliente",
-            "Web"
+            "Web (no se instala, se entra a http://192.168.50.206:3000/)"
           ],
           "se_muestra_si": {
             "pregunta": "¿Qué necesita Instalar/configurar?",
@@ -96,18 +96,9 @@
           }
         },
         {
-          "texto": "En que lugar se encuentran las cámaras",
+          "texto": "En qué lugar se encuentran las cámaras",
           "obligatoria": true,
-          "tipo": "opciones",
-          "opciones": [
-            "Axion 1",
-            "Axion 2",
-            "Axion 3",
-            "InnovAx",
-            "Axion Nqn",
-            "Axion Bs As",
-            "Otro"
-          ],
+          "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Qué necesita Instalar/configurar?",
             "respuesta": "Cámaras"
@@ -119,7 +110,10 @@
           "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Qué necesita Instalar/configurar?",
-            "respuesta": "Aplicación Tótem"
+            "respuesta": [
+              "Aplicación Android",
+              "Aplicación Tótem"
+            ]
           }
         },
         {
@@ -155,21 +149,17 @@
           }
         },
         {
-          "texto": "ID de Anydesk:",
+          "texto": "ID de Anydesk",
           "obligatoria": true,
           "tipo": "texto",
+          "ayuda": "Número de 9 o 10 dígitos que está dentro del programa Anydesk",
           "se_muestra_si": {
             "pregunta": "¿Qué necesita Instalar/configurar?",
-            "respuesta": "Netsuite"
-          }
-        },
-        {
-          "texto": "¿En qué momento podemos conectarnos?",
-          "obligatoria": false,
-          "tipo": "fecha",
-          "se_muestra_si": {
-            "pregunta": "ID de Anydesk:",
-            "respuesta": "(una vez respondida)"
+            "respuesta": [
+              "Impresora",
+              "VPN",
+              "Otro programa / servicio"
+            ]
           }
         },
         {
@@ -193,13 +183,19 @@
         {
           "texto": "Hora",
           "obligatoria": true,
-          "tipo": "fecha",
+          "tipo": "hora",
           "se_muestra_si": {
             "pregunta": "¿Qué necesita Instalar/configurar?",
             "respuesta": "Metabase"
           }
         }
-      ]
+      ],
+      "avisos": {
+        "Power BI": "No es necesario solicitar la instalación. Pasos: https://glpi.axionlift.com/front/knowbaseitem.form.php?id=73",
+        "Netsuite": "No pide datos adicionales.",
+        "Celular": "No pide datos adicionales.",
+        "GLPI": "No pide datos adicionales."
+      }
     },
     "2": {
       "nombre": "Cambio de tóner",
@@ -209,21 +205,6 @@
           "obligatoria": true,
           "tipo": "lista_glpi",
           "fuente_glpi": "PrinterModel"
-        },
-        {
-          "texto": "¿Qué color de tóner?",
-          "obligatoria": true,
-          "tipo": "opciones",
-          "opciones": [
-            "Negro",
-            "Magenta",
-            "Amarillo",
-            "Cian"
-          ],
-          "se_muestra_si": {
-            "pregunta": "Elige impresora",
-            "respuesta": "(una vez respondida)"
-          }
         }
       ]
     },
@@ -231,7 +212,7 @@
       "nombre": "Solicitar cuenta / licencia de programa / servicio",
       "preguntas": [
         {
-          "texto": "¿En que programa / servicio necesita cuenta / licencia?",
+          "texto": "¿En qué programa / servicio necesita cuenta / licencia?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
@@ -251,11 +232,15 @@
           "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
-            "pregunta": "¿En que programa / servicio necesita cuenta / licencia?",
+            "pregunta": "¿En qué programa / servicio necesita cuenta / licencia?",
             "respuesta": "Otro programa / servicio"
           }
         }
-      ]
+      ],
+      "avisos": {
+        "Netsuite": "Dicha cuenta tiene costo; se enviará una validación de compra a tu Coordinador.",
+        "Active Directory (usuario de Windows)": "Dicha cuenta tiene costo; se enviará una validación de compra a tu Coordinador."
+      }
     },
     "4": {
       "nombre": "Permisos de acceso a servicio / servidor",
@@ -275,24 +260,6 @@
           ]
         },
         {
-          "texto": "¿Qué módulo de Netsuite?",
-          "obligatoria": true,
-          "tipo": "opciones",
-          "opciones": [
-            "Compra",
-            "Venta",
-            "Producción",
-            "Recursos Humanos",
-            "Pagos",
-            "Inventario",
-            "Finanzas"
-          ],
-          "se_muestra_si": {
-            "pregunta": "¿En dónde necesita permiso?",
-            "respuesta": "Netsuite"
-          }
-        },
-        {
           "texto": "¿En qué servidor?",
           "obligatoria": true,
           "tipo": "opciones",
@@ -308,25 +275,8 @@
         {
           "texto": "¿Qué carpeta en SRV-FS?",
           "obligatoria": true,
-          "tipo": "lista_glpi",
-          "fuente_glpi": "SoftwareCategory",
-          "se_muestra_si": {
-            "pregunta": "¿En qué servidor?",
-            "respuesta": "SRV-FS (H:)"
-          }
-        },
-        {
-          "texto": "¿Qué carpeta en Srv PLM?",
-          "obligatoria": true,
-          "tipo": "opciones_multiple",
-          "opciones": [
-            "-Dibujos",
-            "-i-d",
-            "-InnovAx-PLM",
-            "-mtm",
-            "-PDF_Proveedores",
-            "-Otra carpeta"
-          ],
+          "tipo": "texto",
+          "ayuda": "Es una carpeta del servidor SRV-FS.",
           "se_muestra_si": {
             "pregunta": "¿En qué servidor?",
             "respuesta": "SRV-FS (H:)"
@@ -354,20 +304,31 @@
             "respuesta": "Otro"
           }
         }
-      ]
+      ],
+      "avisos": {
+        "Netsuite": "No pide datos adicionales.",
+        "Bitwarden": "No pide datos adicionales.",
+        "CRM": "No pide datos adicionales.",
+        "Habilitar puertos USB": "No pide datos adicionales.",
+        "VPN": "No pide datos adicionales.",
+        "Srv PLM (192.168.50.206)": "No pide datos adicionales."
+      }
     },
     "5": {
       "nombre": "Información / capacitación",
       "preguntas": [],
-      "sin_preguntas_extra": true
+      "sin_preguntas_extra": true,
+      "aviso_inicial": "Es muy importante el detalle que describas en la solicitud."
     },
     "6": {
       "nombre": "Mover un equipo de lugar físico",
       "preguntas": [],
-      "sin_preguntas_extra": true
+      "sin_preguntas_extra": true,
+      "aviso_inicial": "Es muy importante el detalle que describas en la solicitud."
     },
     "7": {
       "nombre": "Solicitud de equipo o insumos",
+      "aviso_inicial": "Este pedido necesita aprobación de tu coordinador antes de la compra. Si tu equipo tiene una falla o querés mejorarlo, este no es el motivo correcto.",
       "preguntas": [
         {
           "texto": "¿Qué elemento necesita?",
@@ -389,11 +350,11 @@
           ]
         },
         {
-          "texto": "¿Necesita una nueva Línea?",
+          "texto": "¿Necesita una nueva línea?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si",
+            "Sí",
             "No"
           ],
           "se_muestra_si": {
@@ -412,14 +373,14 @@
             "Otro"
           ],
           "se_muestra_si": {
-            "pregunta": "¿Necesita una nueva Línea?",
-            "respuesta": "Si"
+            "pregunta": "¿Necesita una nueva línea?",
+            "respuesta": "Sí"
           }
         },
         {
-          "texto": "Escribe el código de área",
+          "texto": "Escriba el código de área",
           "obligatoria": true,
-          "tipo": "numero",
+          "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Con qué código de área?",
             "respuesta": "Otro"
@@ -430,7 +391,7 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si necesita movilidad",
+            "Sí necesita movilidad",
             "No necesita movilidad"
           ],
           "se_muestra_si": {
@@ -443,8 +404,8 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Tareas básicas (Ofice/Coliseo)",
-            "Tareas Avanzadas (TeamCenter Cliente)",
+            "Tareas básicas (Office/Coliseo)",
+            "Tareas avanzadas (TeamCenter Cliente)",
             "Diseño (SolidEdge/SolidWorks)"
           ],
           "se_muestra_si": {
@@ -469,6 +430,7 @@
     },
     "8": {
       "nombre": "Alta, baja o movimiento de personal",
+      "aviso_inicial": "Este formulario solo debe completarlo RRHH. En un alta se pueden pedir varias cosas a la vez (no son excluyentes).",
       "preguntas": [
         {
           "texto": "¿Alta, baja o movimiento interno?",
@@ -503,7 +465,7 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si",
+            "Sí",
             "No"
           ],
           "se_muestra_si": {
@@ -514,13 +476,16 @@
         {
           "texto": "Fecha de ingreso estimada",
           "obligatoria": true,
-          "tipo": "fecha"
+          "tipo": "fecha",
+          "se_muestra_si": {
+            "pregunta": "¿Conoce la fecha estimada de ingreso?",
+            "respuesta": "Sí"
+          }
         },
         {
           "texto": "¿En qué lugar trabajaría?",
           "obligatoria": true,
-          "tipo": "lista_glpi",
-          "fuente_glpi": "Location",
+          "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Alta, baja o movimiento interno?",
             "respuesta": "Alta de personal"
@@ -529,8 +494,7 @@
         {
           "texto": "Área a la cual pertenecería",
           "obligatoria": true,
-          "tipo": "lista_glpi",
-          "fuente_glpi": "Group",
+          "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Alta, baja o movimiento interno?",
             "respuesta": "Alta de personal"
@@ -558,7 +522,7 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si",
+            "Sí",
             "No"
           ],
           "se_muestra_si": {
@@ -578,11 +542,11 @@
           ],
           "se_muestra_si": {
             "pregunta": "¿Necesita una nueva línea?",
-            "respuesta": "Si"
+            "respuesta": "Sí"
           }
         },
         {
-          "texto": "Escribe el código de área",
+          "texto": "Escriba el código de área",
           "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
@@ -595,8 +559,8 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Tareas básicas (Ofice/Coliseo)",
-            "Tareas Avanzadas (TeamCenter Cliente)",
+            "Tareas básicas (Office/Coliseo)",
+            "Tareas avanzadas (TeamCenter Cliente)",
             "Diseño (SolidEdge/SolidWorks)"
           ],
           "se_muestra_si": {
@@ -609,7 +573,7 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si necesita movilidad",
+            "Sí necesita movilidad",
             "No necesita movilidad"
           ],
           "se_muestra_si": {
@@ -622,7 +586,7 @@
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si",
+            "Sí",
             "No"
           ],
           "se_muestra_si": {
@@ -631,8 +595,17 @@
           }
         },
         {
-          "texto": "Elige usuario que se da de baja",
-          "obligatoria": false,
+          "texto": "Fecha de la baja",
+          "obligatoria": true,
+          "tipo": "fecha",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Baja de personal"
+          }
+        },
+        {
+          "texto": "Elige qué usuario se da de baja",
+          "obligatoria": true,
           "tipo": "lista_glpi",
           "fuente_glpi": "User",
           "se_muestra_si": {
@@ -647,7 +620,7 @@
           "opciones": [
             "Se asignarían al usuario que reemplazaría el puesto",
             "Quedan a disposición de 4.0 para su asignación",
-            "Todavía no está definido (debe actualizar mas adelante)"
+            "Todavía no está definido"
           ],
           "se_muestra_si": {
             "pregunta": "¿Alta, baja o movimiento interno?",
@@ -655,7 +628,7 @@
           }
         },
         {
-          "texto": "Nombre de usuario a quien se asignarían sus elementos de trabajo",
+          "texto": "Nombre del usuario a quien se asignarían los elementos",
           "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
@@ -664,10 +637,29 @@
           }
         },
         {
-          "texto": "Elige usuario que se movería",
-          "obligatoria": false,
+          "texto": "¿A qué usuario se le deben transferir sus archivos?",
+          "obligatoria": true,
+          "tipo": "texto",
+          "se_muestra_si": {
+            "pregunta": "¿Qué uso tendrían sus elementos de trabajo?",
+            "respuesta": "Se asignarían al usuario que reemplazaría el puesto"
+          }
+        },
+        {
+          "texto": "Fecha del movimiento",
+          "obligatoria": true,
+          "tipo": "fecha",
+          "se_muestra_si": {
+            "pregunta": "¿Alta, baja o movimiento interno?",
+            "respuesta": "Movimiento interno"
+          }
+        },
+        {
+          "texto": "Elige el usuario que se movería",
+          "obligatoria": true,
           "tipo": "lista_glpi",
           "fuente_glpi": "User",
+          "ayuda": "Si no lo encontrás, escribilo en el detalle.",
           "se_muestra_si": {
             "pregunta": "¿Alta, baja o movimiento interno?",
             "respuesta": "Movimiento interno"
@@ -676,16 +668,7 @@
         {
           "texto": "¿En qué lugar trabajaría?",
           "obligatoria": true,
-          "tipo": "opciones",
-          "opciones": [
-            "Axion 1",
-            "Axion 2",
-            "Axion 3",
-            "InnovAx",
-            "Axion Bs As",
-            "Axion Nqn",
-            "Externo"
-          ],
+          "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Alta, baja o movimiento interno?",
             "respuesta": "Movimiento interno"
@@ -694,26 +677,17 @@
         {
           "texto": "Área a la cual pertenecería",
           "obligatoria": true,
-          "tipo": "lista_glpi",
-          "fuente_glpi": "Group",
-          "se_muestra_si": {
-            "pregunta": "¿Alta, baja o movimiento interno?",
-            "respuesta": "Movimiento interno"
-          }
-        },
-        {
-          "texto": "¿A qué usuario se le deben transferir sus archivos?",
-          "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿Alta, baja o movimiento interno?",
-            "respuesta": "Baja de personal"
+            "respuesta": "Movimiento interno"
           }
         }
       ]
     },
     "9": {
       "nombre": "Mejora de equipo",
+      "aviso_inicial": "Completá este motivo solo si tu equipo NO tiene una falla (si tiene falla, usá 'Falla en uno de mis dispositivos').",
       "preguntas": [
         {
           "texto": "Seleccione el equipo que desea mejorar",
@@ -729,7 +703,7 @@
           "obligatoria": true,
           "tipo": "opciones_multiple",
           "opciones": [
-            "Necesito mas espacio para guardar mis datos",
+            "Necesito más espacio para guardar mis datos",
             "No responde cuando tengo varios programas abiertos",
             "Funciona muy lento, tarda en iniciar",
             "El rendimiento gráfico con programas de diseño es insuficiente"
@@ -739,13 +713,16 @@
             "respuesta": "Computadora"
           }
         }
-      ]
+      ],
+      "avisos": {
+        "Celular": "No es posible mejorar un celular. Si tiene una falla, usá 'Falla en uno de mis dispositivos'."
+      }
     },
     "10": {
       "nombre": "Restablecer contraseña",
       "preguntas": [
         {
-          "texto": "¿Que contraseña necesita restablecer?",
+          "texto": "¿Qué contraseña necesita restablecer?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
@@ -765,7 +742,7 @@
           ]
         },
         {
-          "texto": "Nombra el usuario",
+          "texto": "Nombre del usuario",
           "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
@@ -787,7 +764,7 @@
             "Teléfono fijo",
             "Computadora",
             "Impresora",
-            "Periférico (mouse, teclado, etc)",
+            "Periférico (mouse, teclado, etc.)",
             "Auriculares",
             "Tótem",
             "Otro"
@@ -798,6 +775,19 @@
           "obligatoria": true,
           "tipo": "lista_glpi",
           "fuente_glpi": "PrinterModel",
+          "se_muestra_si": {
+            "pregunta": "¿En qué dispositivo tiene la falla?",
+            "respuesta": "Impresora"
+          }
+        },
+        {
+          "texto": "¿Quién tiene la falla en la impresora?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Solo yo",
+            "Todos (falla general)"
+          ],
           "se_muestra_si": {
             "pregunta": "¿En qué dispositivo tiene la falla?",
             "respuesta": "Impresora"
@@ -819,7 +809,7 @@
           ],
           "se_muestra_si": {
             "pregunta": "¿En qué dispositivo tiene la falla?",
-            "respuesta": "Periférico (mouse, teclado, etc)"
+            "respuesta": "Periférico (mouse, teclado, etc.)"
           }
         },
         {
@@ -832,7 +822,7 @@
           }
         },
         {
-          "texto": "¿Quién tiene la falla?",
+          "texto": "¿Quién tiene la falla en el teléfono?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
@@ -845,7 +835,7 @@
           }
         },
         {
-          "texto": "¿Quién tiene la falla?",
+          "texto": "¿Quién tiene la falla en la computadora?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
@@ -862,8 +852,9 @@
           "obligatoria": false,
           "tipo": "lista_glpi",
           "fuente_glpi": "User",
+          "ayuda": "Si no lo encontrás, escribilo en el detalle.",
           "se_muestra_si": {
-            "pregunta": "¿Quién tiene la falla?",
+            "pregunta": "¿Quién tiene la falla en la computadora?",
             "respuesta": "Otro usuario"
           }
         },
@@ -875,7 +866,7 @@
             "Conexión a internet",
             "No funciona una aplicación",
             "Sincronización de hora",
-            "Error de Imagen",
+            "Error de imagen",
             "No enciende",
             "Falla de pantalla táctil"
           ],
@@ -885,7 +876,7 @@
           }
         },
         {
-          "texto": "En donde se encuentra el tótem",
+          "texto": "¿Dónde se encuentra el tótem?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
@@ -899,15 +890,19 @@
           }
         },
         {
-          "texto": "Escribe el número del tótem",
+          "texto": "Número de tótem",
           "obligatoria": true,
-          "tipo": "numero",
+          "tipo": "texto",
+          "ayuda": "Está en la estructura del tótem.",
           "se_muestra_si": {
             "pregunta": "¿En qué dispositivo tiene la falla?",
             "respuesta": "Tótem"
           }
         }
-      ]
+      ],
+      "avisos": {
+        "Impresora": "Esto NO es un cambio de tóner ni una instalación de impresora. Si necesitás eso, usá los motivos correspondientes."
+      }
     },
     "12": {
       "nombre": "Falla de programa / servicio / servidor",
@@ -930,6 +925,31 @@
           ]
         },
         {
+          "texto": "¿Quién tiene la falla?",
+          "obligatoria": true,
+          "tipo": "opciones",
+          "opciones": [
+            "Falla general (a todos)",
+            "Falla local (solo a mí)",
+            "Falla a otro usuario"
+          ],
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": "Conexión a internet"
+          }
+        },
+        {
+          "texto": "Seleccione usuario",
+          "obligatoria": false,
+          "tipo": "lista_glpi",
+          "fuente_glpi": "User",
+          "ayuda": "Si no lo encontrás, escribilo en el detalle.",
+          "se_muestra_si": {
+            "pregunta": "¿Quién tiene la falla?",
+            "respuesta": "Falla a otro usuario"
+          }
+        },
+        {
           "texto": "Elige el servidor",
           "obligatoria": true,
           "tipo": "opciones",
@@ -943,53 +963,11 @@
           }
         },
         {
-          "texto": "¿Quién tiene la falla?",
-          "obligatoria": true,
-          "tipo": "opciones",
-          "opciones": [
-            "Falla general (a todos)",
-            "Falla local (solo a mi)",
-            "Falla a otro usuario"
-          ],
-          "se_muestra_si": {
-            "pregunta": "¿En dónde tiene la falla?",
-            "respuesta": "Conexión a internet"
-          }
-        },
-        {
-          "texto": "Seleccione usuario",
-          "obligatoria": false,
-          "tipo": "lista_glpi",
-          "fuente_glpi": "User",
-          "se_muestra_si": {
-            "pregunta": "¿Quién tiene la falla?",
-            "respuesta": "Falla a otro usuario"
-          }
-        },
-        {
-          "texto": "ID de Anydesk:",
-          "obligatoria": true,
-          "tipo": "texto",
-          "se_muestra_si": {
-            "pregunta": "¿En dónde tiene la falla?",
-            "respuesta": "Servidor de archivos"
-          }
-        },
-          {
-          "texto": "ID de Anydesk:",
-          "obligatoria": true,
-          "tipo": "texto",
-          "se_muestra_si": {
-            "pregunta": "¿En dónde tiene la falla?",
-            "respuesta": "TeamCenter / SolidEdge"
-          }
-        },
-        {
           "texto": "¿Es un problema sobre nombres de usuarios que ya no están en la empresa?",
           "obligatoria": true,
           "tipo": "opciones",
           "opciones": [
-            "Si",
+            "Sí",
             "No"
           ],
           "se_muestra_si": {
@@ -998,15 +976,36 @@
           }
         },
         {
-          "texto": "Nombre del programa/aplicación/servicio con el que tiene problemas",
+          "texto": "Nombre del programa / aplicación / servicio con el que tiene problemas",
           "obligatoria": true,
           "tipo": "texto",
           "se_muestra_si": {
             "pregunta": "¿En dónde tiene la falla?",
             "respuesta": "Otro Programa / Aplicación / Servicio"
           }
+        },
+        {
+          "texto": "ID de Anydesk",
+          "obligatoria": true,
+          "tipo": "texto",
+          "ayuda": "Número de 9 o 10 dígitos que está dentro del programa Anydesk",
+          "se_muestra_si": {
+            "pregunta": "¿En dónde tiene la falla?",
+            "respuesta": [
+              "Servidor de archivos",
+              "TeamCenter / SolidEdge",
+              "Lector de PDF",
+              "Otro Programa / Aplicación / Servicio"
+            ]
+          }
         }
-      ]
+      ],
+      "avisos": {
+        "NetSuite": "No pide datos adicionales.",
+        "GLPI": "No pide datos adicionales.",
+        "CRM": "No pide datos adicionales.",
+        "CAS / GAC": "No pide datos adicionales."
+      }
     }
   }
 }

@@ -157,8 +157,10 @@ class Orquestador:
         try:
             # ---------- Todavía sin clasificar ----------
             if motivo is None:
+                primer_mensaje = not descripcion
+
                 # Portero: en un mensaje NUEVO filtramos saludos/preguntas/fuera.
-                if not descripcion:
+                if primer_mensaje:
                     portero = clasificar_intencion(mensaje)
                     if portero.get("intencion") != "problema":
                         respuesta = portero.get("respuesta_sugerida") or (
@@ -171,13 +173,27 @@ class Orquestador:
                 # El detalle es lo que el usuario fue contando (campo 4 del ticket).
                 descripcion = f"{descripcion}. {mensaje}".strip(". ") if descripcion else mensaje
                 c = clasificar(descripcion, self.categorias, self.motivos)
-                if c.get("necesita_aclaracion"):
+
+                # Desambiguación: si el mensaje es dudoso, preguntamos UNA vez
+                # (solo en el primer mensaje; con la respuesta del usuario ya
+                # clasificamos para no quedar en un loop).
+                indeciso = c.get("necesita_aclaracion") or (c.get("confianza") or 1) < 0.5
+                if indeciso and primer_mensaje and c.get("pregunta"):
                     historial.append({"rol": "bot", "texto": c["pregunta"]})
                     persistencia.guardar(telefono, estado="esperar_descripcion",
                                          descripcion=descripcion, historial=historial)
                     return c["pregunta"]
+
+                motivo = c.get("motivo")
+                if motivo is None:
+                    # Último recurso: pedimos un poco más de detalle.
+                    pregunta = c.get("pregunta") or "¿Podés darme un poco más de detalle?"
+                    historial.append({"rol": "bot", "texto": pregunta})
+                    persistencia.guardar(telefono, estado="esperar_descripcion",
+                                         descripcion=descripcion, historial=historial)
+                    return pregunta
+
                 # Clasificado: guardamos categoría (2) + título (3) + descripción (4).
-                motivo = c["motivo"]
                 categoria_glpi = c.get("categoria_id")
                 persistencia.guardar(telefono, estado="esperar_descripcion", motivo=motivo,
                                      categoria_glpi=categoria_glpi,

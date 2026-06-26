@@ -44,15 +44,29 @@ MODELOS_FALLBACK = [
 
 
 INSTRUCCION_CLASIFICAR = """\
-Sos un clasificador de tickets de soporte de IT (área "4.0").
-Recibís el mensaje de un empleado, la lista de categorías de GLPI y la lista de
-motivos del formulario. Elegí el "motivo" (número) y un "categoria_id" de la
-lista (nunca inventes), proponé un "titulo" corto, y si no alcanza para decidir
-poné "necesita_aclaracion": true con una "pregunta".
+Sos un clasificador de tickets de soporte de IT (área "4.0"). Recibís el mensaje
+de un empleado, la lista de categorías de GLPI y la lista de motivos del formulario.
+
+Tu trabajo:
+- Si el mensaje encaja CLARAMENTE en un motivo, elegí el "motivo" (número) y un
+  "categoria_id" de la lista (nunca inventes), y proponé un "titulo" corto.
+- Si el mensaje podría ser DOS o más motivos distintos, o si falta información para
+  decidir, NO elijas a la suerte: poné "necesita_aclaracion": true, listá los
+  números de los motivos candidatos en "motivos_candidatos", y en "pregunta" hacé
+  UNA pregunta corta y concreta que permita distinguirlos, ofreciendo las
+  alternativas en lenguaje natural.
+- "confianza" es tu seguridad de 0 a 1.
+
+Ambigüedades típicas que SIEMPRE hay que preguntar:
+- FALLA de algo que ya funcionaba vs INSTALAR/configurar algo nuevo vs SOLICITAR un
+  equipo nuevo vs MEJORAR un equipo que anda. Ej: "necesito la impresora de
+  administración" -> ¿instalarla (motivo 1) o pedir una nueva (motivo 7)? Preguntá.
+- "las cámaras andan mal" -> ¿es una falla o piden revisión/instalación? Preguntá.
 
 Respondé SOLO con un JSON:
 {"motivo": <int|null>, "categoria_id": <int|null>, "titulo": <str>,
- "confianza": <float>, "necesita_aclaracion": <bool>, "pregunta": <str|null>}
+ "confianza": <float>, "necesita_aclaracion": <bool>, "pregunta": <str|null>,
+ "motivos_candidatos": <lista de int>}
 """
 
 INSTRUCCION_RELEVAR = """\
@@ -64,7 +78,18 @@ Reglas:
 - Extraé de la conversación TODO lo que el usuario ya dijo (aunque sea un texto
   largo). Nunca repreguntes algo ya respondido.
 - Respetá las condiciones "se_muestra_si": una sub-pregunta solo aplica si su
-  condición se cumple. Si no, ignorala.
+  condición se cumple. Si no, ignorala. El campo "respuesta" puede ser un valor o
+  una LISTA de valores: la pregunta aplica si la respuesta previa es ese valor o
+  uno de la lista.
+- Solo pedí datos OBLIGATORIOS que apliquen. Los opcionales, solo si vienen al caso.
+- Si una pregunta trae "ayuda", usala para explicarle al usuario qué tiene que poner.
+- Si el motivo trae "aviso_inicial", comunicáselo al usuario en tu primera pregunta.
+- Si el motivo trae "avisos" y la opción elegida tiene un aviso, comunicáselo al
+  usuario (es información útil, no una pregunta).
+- Para preguntas de SELECCIÓN MÚLTIPLE (tipo "opciones_multiple"): listá vos las
+  opciones, aclará que puede elegir VARIAS, y guardá la lista de lo elegido. Una
+  condición "se_muestra_si" sobre una de estas se cumple si su valor está entre
+  los seleccionados.
 - Hacé UNA pregunta por turno, breve y clara.
 
 Slots CERRADOS (los que tienen "opciones"):
@@ -224,7 +249,7 @@ def _preparar_rama(rama, opciones_glpi):
                 q["opciones"] = opciones
                 q.pop("fuente_glpi", None)
             # si no hay lista (vacía o demasiado grande) queda como texto libre
-        if opciones:
+        if opciones and q.get("tipo") != "opciones_multiple":
             cerrados[q["texto"]] = {o.strip().casefold(): o for o in opciones}
         preguntas.append(q)
     rama2 = dict(rama)
