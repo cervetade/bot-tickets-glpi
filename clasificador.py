@@ -30,6 +30,56 @@ from google.genai import errors
 
 load_dotenv()
 
+
+# El JSON va en la MISMA carpeta que clasificador.py (igual que formulario_guia.json).
+RUTA_EJEMPLOS = os.path.join(os.path.dirname(__file__), "ejemplos_clasificacion.json")
+
+# Cuántos ejemplos como mucho meter en el prompt. Subir/bajar según cuánto te
+# pese en tokens (en free tier cada token cuenta). Con None entran todos.
+MAX_EJEMPLOS = None
+
+
+@lru_cache(maxsize=1)
+def cargar_ejemplos():
+    """
+    Lee ejemplos_clasificacion.json una sola vez (queda cacheado).
+    Cada item: {"texto": <lo que escribió el usuario>, "categoria": <nombre GLPI>}.
+    Si el archivo no está, devolvemos lista vacía y el bot sigue andando igual
+    (sin ejemplos, como antes). Así nunca se rompe por un archivo faltante.
+    """
+    try:
+        with open(RUTA_EJEMPLOS, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+
+def _bloque_ejemplos():
+    """
+    Arma el texto de ejemplos que se inyecta en el prompt de clasificar().
+    Guardamos la categoría por NOMBRE (no por id): el id lo trae GLPI vivo y
+    puede cambiar; el nombre no. El modelo, que en el mismo prompt tiene la
+    lista 'id | nombre', mapea solo el nombre del ejemplo al id correcto.
+    """
+    ejemplos = cargar_ejemplos()
+    if MAX_EJEMPLOS:
+        ejemplos = ejemplos[:MAX_EJEMPLOS]
+    if not ejemplos:
+        return ""  # sin ejemplos -> el prompt queda como estaba
+
+    lineas = [
+        "Ejemplos reales de tickets ya cargados por empleados "
+        "(mensaje del usuario -> categoría que le correspondió). "
+        "Usalos como referencia del lenguaje real y del patrón, pero elegí "
+        "SIEMPRE el categoria_id de la lista de categorías de arriba:",
+        "",
+    ]
+    for e in ejemplos:
+        texto = " ".join(e["texto"].split())  # por las dudas, sin saltos raros
+        lineas.append(f'- "{texto}" -> {e["categoria"]}')
+    return "\n".join(lineas)
+
+
 MODELO = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
 # Modelos a probar en orden: si el primero está saturado (503) o sin cupo (429),
@@ -210,12 +260,19 @@ def clasificar_intencion(mensaje):
     return _generar(f'Mensaje del usuario:\n"{mensaje.strip()}"', INSTRUCCION_INTENCION)
 
 
-def clasificar(mensaje, categorias, motivos):
+def clasificar(mensaje, categorias, motivos, con_ejemplos=True):
     listado_cat = "\n".join(f'{c["id"]} | {c["nombre"]}' for c in categorias)
     listado_mot = "\n".join(f"{k} | {v}" for k, v in motivos.items())
+ 
+    bloque_ej = ""
+    if con_ejemplos:                                  # <-- interruptor del A/B
+        ej = _bloque_ejemplos()
+        bloque_ej = f"{ej}\n\n" if ej else ""
+ 
     prompt = (
         f"Motivos del formulario (numero | nombre):\n{listado_mot}\n\n"
         f"Categorías de GLPI (id | nombre):\n{listado_cat}\n\n"
+        f"{bloque_ej}"
         f'Mensaje del usuario:\n"{mensaje.strip()}"'
     )
     data = _generar(prompt, INSTRUCCION_CLASIFICAR)

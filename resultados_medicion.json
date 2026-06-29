@@ -1,0 +1,10 @@
+{
+  "1": {
+    "texto": "se apago / no funciona internet",
+    "esperada": "4.0 > Falla de equipo > Tótem",
+    "pred_con": "4.0 > Falla de programa o servicio > Conexión a internet",
+    "pred_sin": "4.0 > Falla de programa o servicio > Conexión a internet",
+    "ok_con": false,
+    "ok_sin": false
+  }
+}

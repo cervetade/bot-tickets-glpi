@@ -1,0 +1,162 @@
+[
+  {
+    "texto": "se apago / no funciona internet",
+    "categoria_esperada": "4.0 > Falla de equipo > Tótem"
+  },
+  {
+    "texto": "Hola chicos, cuando puedan hacemos la configuración de las compus . Gracias!",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Otro"
+  },
+  {
+    "texto": "COLOCAR CAMARAS DIA 11.06.25 DE 6HS A 16HS- GRACIAS",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Cámaras"
+  },
+  {
+    "texto": "Cuando tengo dos archivos abiertos de PowerBi, comienza a trabarse y todo lo que consuma internet se cierra. Por ejemplo, en Netsuite se cierra la cesión y me pide el código autenticador, con el correo de gmail lo mismo.",
+    "categoria_esperada": "4.0 > Mejora de equipo"
+  },
+  {
+    "texto": "Celular y Numero para Comercial de NOA",
+    "categoria_esperada": "4.0 > Compras > Celular"
+  },
+  {
+    "texto": "Perdi el celular del trabajo el dia 22/06. Solicito un nuevo celular y si esta la posibilidad mantener el mismo numero que tenia (2995957313)",
+    "categoria_esperada": "4.0 > Compras > Celular"
+  },
+  {
+    "texto": "No tiene conexión a internet",
+    "categoria_esperada": "4.0 > Falla de programa o servicio > Conexión a internet"
+  },
+  {
+    "texto": "COLOCAR CAMARAS 02.12.25 DE 6AM A 16PM-GRACIAS",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Cámaras"
+  },
+  {
+    "texto": "Hola , solicito un cambio de toner",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Cambio de tóner"
+  },
+  {
+    "texto": "No se conecta a la VPN cuando estoy en mi casa.",
+    "categoria_esperada": "4.0 > Falla de programa o servicio > Otro"
+  },
+  {
+    "texto": "LA TABLET DEL CENTRO DE MECANIZADO HYUNDAI 5600 SE APAGA",
+    "categoria_esperada": "4.0 > Falla de equipo > Celular / Tablet"
+  },
+  {
+    "texto": "TABLET PARA PUESTO DE SOLDADURA",
+    "categoria_esperada": "4.0 > Compras > Otro"
+  },
+  {
+    "texto": "Al abrir un archivo SE me saltan esos carteles",
+    "categoria_esperada": "4.0 > Falla de programa o servicio > TC/SE"
+  },
+  {
+    "texto": "Vincular impresora a la tablet de expedicion de Luciano Repiso",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Impresora"
+  },
+  {
+    "texto": "COLOCAR CAMARAS DIA 23.07.25 DE 6HS A 16HS, MUCHAS GRACIAS!",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Cámaras"
+  },
+  {
+    "texto": "[9b485a9f-e509fb39-6979fd38d48386.03042825] Cuando inicio sesión y selecciono el rol me queda cargando y no ingresa. lo hace con cualquier rol, lo estuve usando hasta las 8:30 sin ningun problema",
+    "categoria_esperada": "4.0 > Falla de programa o servicio > NetSuite"
+  },
+  {
+    "texto": "Actualización VPN",
+    "categoria_esperada": "4.0 > Instalación & Configuración > VPN"
+  },
+  {
+    "texto": "Quería solicitarles si pueden revisar mi notebook ya que estas últimas semanas la veo muy lenta. Gracias!",
+    "categoria_esperada": "4.0 > Falla de equipo > Computadora"
+  },
+  {
+    "texto": "Hola chicos, buen día como andan? necesito que me ayuden a recuperar la contraseña del mail, gracias!!",
+    "categoria_esperada": "4.0 > Reiniciar contraseña"
+  },
+  {
+    "texto": "no nos esta funcionando el teamcenter en AX1",
+    "categoria_esperada": "4.0 > Falla de programa o servicio > TC/SE"
+  },
+  {
+    "texto": "Celu en terapia intensiva! no se puede conectar ni al WP web",
+    "categoria_esperada": "4.0 > Falla de equipo > Celular / Tablet"
+  },
+  {
+    "texto": "No podia imprimir!",
+    "categoria_esperada": "4.0 > Falla de equipo > Impresora"
+  },
+  {
+    "texto": "Hola chicos, Tomas Arriola ingreso en el dia de ayer en el depósito del CDS NQ, necesitamos reasignarle el mail de Ivan Blatner Alarcon a el, que es quien lo va a reemplazar, lo mismo que el numero de telefono es el del deposito de Neuquen. Muchas gracias!!",
+    "categoria_esperada": "4.0 > Gestión de personal > Alta de personal"
+  },
+  {
+    "texto": "No funciona mas el mousse!",
+    "categoria_esperada": "4.0 > Falla de equipo > Periférico"
+  },
+  {
+    "texto": "Necesitamos conexión a impresora indicada en item anterior",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Impresora"
+  },
+  {
+    "texto": "Buenos días chicos, Necesitaría reponer mis auriculares. Muchas gracias",
+    "categoria_esperada": "4.0 > Compras > Auriculares"
+  },
+  {
+    "texto": "Se me entregaron auriculares, tenia unos personales",
+    "categoria_esperada": "4.0 > Falla de equipo > Auriculares"
+  },
+  {
+    "texto": "Gise trabajará en la empresa hasta el 27/06, estamos terminando de definir con Mati V como reorganizamos el Área, en principio conservar la información. Gracias",
+    "categoria_esperada": "4.0 > Gestión de personal > Baja de personal"
+  },
+  {
+    "texto": "Instalacion de token para realizar transacciones bancarias. El token se descarga de la web de BNA junto con una aplicacion Java.",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Otro"
+  },
+  {
+    "texto": "Buenos días, El motivo del GLPI es para hacer un cambio de IVR en el 0800 para la Opción 3 CDS San Francisco. Dejo el número por el cual hay que cambiar: +54 9 3564 64-7179 Quedo a disposción, Saludos.-",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Otro"
+  },
+  {
+    "texto": "Buenos dias, seguimos sin tener timbre en la planta de Axion 2.",
+    "categoria_esperada": "4.0 > Falla de equipo > Otro"
+  },
+  {
+    "texto": "computadora torno cnc chico sector mecanizado - no funciona el internet",
+    "categoria_esperada": "4.0 > Falla de equipo > Computadora"
+  },
+  {
+    "texto": "Imprime la hoja con manchas de tinta.",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Cambio de tóner"
+  },
+  {
+    "texto": "Hola chicos necesitamos toner en la impreso de RH no se el nombre exacto para elegir la impresora correcta. gracias",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Cambio de tóner"
+  },
+  {
+    "texto": "totem sin internet",
+    "categoria_esperada": "4.0 > Falla de equipo > Tótem"
+  },
+  {
+    "texto": "Pide pregunta para ingresar",
+    "categoria_esperada": "4.0 > Reiniciar contraseña"
+  },
+  {
+    "texto": "Cami Marchesse se olvidó la contraseña del mail y de GLPI.",
+    "categoria_esperada": "4.0 > Reiniciar contraseña"
+  },
+  {
+    "texto": "Auriculares para la notebook",
+    "categoria_esperada": "4.0 > Compras > Auriculares"
+  },
+  {
+    "texto": "Se solicita la instalación de la versión de Rustdesk utilizada por Autologica",
+    "categoria_esperada": "4.0 > Instalación & Configuración > Otro"
+  },
+  {
+    "texto": "nos dice comando del monitor bloqueados",
+    "categoria_esperada": "4.0 > Falla de equipo > Tótem"
+  }
+]
