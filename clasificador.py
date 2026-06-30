@@ -21,6 +21,7 @@ Requiere formulario_guia.json en la misma carpeta y las vars de GLPI/GEMINI.
 import os
 import json
 import time
+import httpx
 from functools import lru_cache
 
 from dotenv import load_dotenv
@@ -80,18 +81,18 @@ def _bloque_ejemplos():
     return "\n".join(lineas)
 
 
-MODELO = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+MODELO = os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
 
 # Modelos a probar en orden: si el primero está saturado (503) o sin cupo (429),
 # se salta al siguiente. El cupo gratis es POR MODELO, así que esto suma pedidos.
 # (Familia 2.5, donde temperature=0 es válida.)
 MODELOS_FALLBACK = [
-    "gemini-2.5-flash",
+    "gemini-3.1-flash-lite-preview",   # 500/día -> primero
     "gemini-2.5-flash-lite",
-    "gemini-3.1-flash-lite",   # familia 3.x: cada modelo tiene su propio cupo gratis
+    "gemini-2.5-flash",
     "gemini-3.5-flash",
 ]
-
+print(f"  (modelo elegido: {MODELO} | orden: {[MODELO] + MODELOS_FALLBACK})")
 
 INSTRUCCION_CLASIFICAR = """\
 Sos un clasificador de tickets de soporte de IT (área "4.0"). Recibís el mensaje
@@ -173,11 +174,30 @@ def _cliente():
         )
     return genai.Client(api_key=api_key)
 
+# =============================================================================
+#  ACTUALIZACIÓN de _generar()  —  ahora también aguanta cortes de red
+# =============================================================================
+#  El problema: tu _generar atrapaba 503 (saturado) y 429 (sin cupo), pero NO
+#  los cortes de conexión (el WinError 10054). Cuando la red se cortaba un
+#  segundo, la excepción no era ninguna de las dos esperadas, el bot se moría,
+#  y el script lo mostraba como "límite" (cuando no lo era).
+#
+#  El cambio: una sola línea de except nueva, marcada con  # <-- NUEVO.
+#  Un corte de red es pasajero y no tiene que ver con el modelo, así que lo
+#  tratamos como al 503: esperamos un toque y reintentamos el mismo modelo.
+#
+#  IMPORTANTE: arriba de clasificador.py, sumá este import junto a los otros:
+#      import httpx
+#  (El SDK de Gemini usa httpx por debajo, así que ya lo tenés instalado.)
+# =============================================================================
+
+
 
 def _generar(prompt, instruccion_sistema, reintentos=2):
     """
-    Pide JSON a Gemini. Si un modelo está saturado (503) o sin cupo (429),
-    reintenta unas veces y, si sigue fallando, prueba el siguiente modelo.
+    Pide JSON a Gemini. Si un modelo está saturado (503), sin cupo (429) o se
+    corta la red, reintenta unas veces y, si sigue fallando, prueba el siguiente
+    modelo.
     """
     modelos, vistos = [], set()
     for m in [MODELO] + MODELOS_FALLBACK:
@@ -202,20 +222,22 @@ def _generar(prompt, instruccion_sistema, reintentos=2):
                     config=types.GenerateContentConfig(**cfg),
                 )
                 return json.loads(resp.text)
-            except errors.ServerError as e:   # 503 saturado -> esperar y reintentar
+            except errors.ServerError as e:        # 503 saturado -> esperar y reintentar
                 ultimo = e
                 time.sleep(2 * (i + 1))
-            except errors.ClientError as e:    # 429 sin cupo / modelo no disponible
+            except httpx.TransportError as e:       # <-- NUEVO: corte de red (WinError
+                ultimo = e                          #     10054, timeouts) -> reintentar
+                time.sleep(2 * (i + 1))
+            except errors.ClientError as e:         # 429 sin cupo / modelo no disponible
                 ultimo = e
                 break  # no insistas con este modelo, pasá al siguiente
         if pos + 1 < len(modelos):
             print(f"  (Gemini: {modelo} no disponible, probando otro modelo...)")
 
     raise RuntimeError(
-        "Gemini no respondió con ningún modelo (saturado o sin cupo). "
+        "Gemini no respondió con ningún modelo (saturado, sin cupo o red caída). "
         "Esperá un momento y reintentá, o activá billing para subir los topes."
     ) from ultimo
-
 
 INSTRUCCION_INTENCION = """\
 Sos el FILTRO DE ENTRADA de un bot que SOLO crea tickets de soporte INFORMÁTICO

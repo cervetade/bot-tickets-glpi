@@ -6,5 +6,187 @@
     "pred_sin": "4.0 > Falla de programa o servicio > Conexión a internet",
     "ok_con": false,
     "ok_sin": false
+  },
+  "2": {
+    "texto": "Hola chicos, cuando puedan hacemos la configuración de las compus . Gracias!",
+    "esperada": "4.0 > Instalación & Configuración > Otro",
+    "pred_con": "4.0 > Instalación & Configuración > Otro",
+    "pred_sin": "4.0 > Instalación & Configuración > Otro",
+    "ok_con": true,
+    "ok_sin": true
+  },
+  "3": {
+    "texto": "COLOCAR CAMARAS DIA 11.06.25 DE 6HS A 16HS- GRACIAS",
+    "esperada": "4.0 > Instalación & Configuración > Cámaras",
+    "pred_con": "4.0 > Instalación & Configuración > Cámaras",
+    "pred_sin": "4.0 > Instalación & Configuración > Cámaras",
+    "ok_con": true,
+    "ok_sin": true
+  },
+  "4": {
+    "texto": "Cuando tengo dos archivos abiertos de PowerBi, comienza a trabarse y todo lo que consuma internet se cierra. Por ejemplo, en Netsuite se cierra la cesión y me pide el código autenticador, con el correo de gmail lo mismo.",
+    "esperada": "4.0 > Mejora de equipo",
+    "pred_con": "4.0 > Falla de equipo > Computadora",
+    "pred_sin": "4.0 > Falla de equipo > Computadora",
+    "ok_con": false,
+    "ok_sin": false
+  },
+  "5": {
+    "texto": "Hola chicos, buen día como andan? necesito que me ayuden a recuperar la contraseña del mail, gracias!!",
+    "esperada": "4.0 > Reiniciar contraseña",
+    "pred_con": "4.0 > Reiniciar contraseña",
+    "pred_sin": "4.0 > Reiniciar contraseña",
+    "ok_con": true,
+    "ok_sin": true
+  },
+  "6": {
+    "texto": "Celular y Numero para Comercial de NOA",
+    "esperada": "4.0 > Compras > Celular",
+    "pred_con": "4.0 > Compras > Celular",
+    "pred_sin": "",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "7": {
+    "texto": "LA TABLET DEL CENTRO DE MECANIZADO HYUNDAI 5600 SE APAGA",
+    "esperada": "4.0 > Falla de equipo > Celular / Tablet",
+    "pred_con": "4.0 > Falla de equipo > Celular / Tablet",
+    "pred_sin": "4.0 > Falla de equipo > Celular / Tablet",
+    "ok_con": true,
+    "ok_sin": true,
+    "sin_cat_con": false,
+    "sin_cat_sin": false
+  },
+  "8": {
+    "texto": "Al abrir un archivo SE me saltan esos carteles",
+    "esperada": "4.0 > Falla de programa o servicio > TC/SE",
+    "pred_con": "4.0 > Falla de programa o servicio > TC/SE",
+    "pred_sin": "",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "9": {
+    "texto": "Vincular impresora a la tablet de expedicion de Luciano Repiso",
+    "esperada": "4.0 > Instalación & Configuración > Impresora",
+    "pred_con": "4.0 > Instalación & Configuración > Impresora",
+    "pred_sin": "",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "10": {
+    "texto": "Quería solicitarles si pueden revisar mi notebook ya que estas últimas semanas la veo muy lenta. Gracias!",
+    "esperada": "4.0 > Falla de equipo > Computadora",
+    "pred_con": "4.0 > Mejora de equipo",
+    "pred_sin": "",
+    "ok_con": false,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "11": {
+    "texto": "Buenos días chicos, Necesitaría reponer mis auriculares. Muchas gracias",
+    "esperada": "4.0 > Compras > Auriculares",
+    "pred_con": "4.0 > Compras > Auriculares",
+    "pred_sin": "",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "12": {
+    "texto": "Cuando tengo dos archivos abiertos de PowerBi, comienza a trabarse y todo lo que consuma internet se cierra. Por ejemplo, en Netsuite se cierra la cesión y me pide el código autenticador, con el correo de gmail lo mismo.",
+    "esperada": "4.0 > Mejora de equipo",
+    "pred_con": "4.0 > Falla de programa o servicio > Otro",
+    "pred_sin": "",
+    "ok_con": false,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "13": {
+    "texto": "No tiene conexión a internet",
+    "esperada": "4.0 > Falla de programa o servicio > Conexión a internet",
+    "pred_con": "4.0 > Falla de programa o servicio > Conexión a internet",
+    "pred_sin": "",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "14": {
+    "texto": "No se conecta a la VPN cuando estoy en mi casa.",
+    "esperada": "4.0 > Falla de programa o servicio > Otro",
+    "pred_con": "4.0 > Instalación & Configuración > VPN",
+    "pred_sin": "4.0 > Falla de programa o servicio > Otro",
+    "ok_con": false,
+    "ok_sin": true,
+    "sin_cat_con": false,
+    "sin_cat_sin": false
+  },
+  "15": {
+    "texto": "TABLET PARA PUESTO DE SOLDADURA",
+    "esperada": "4.0 > Compras > Otro",
+    "pred_con": "4.0 > Compras > Tablet",
+    "pred_sin": "",
+    "ok_con": false,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": true
+  },
+  "16": {
+    "texto": "[9b485a9f-e509fb39-6979fd38d48386.03042825] Cuando inicio sesión y selecciono el rol me queda cargando y no ingresa. lo hace con cualquier rol, lo estuve usando hasta las 8:30 sin ningun problema",
+    "esperada": "4.0 > Falla de programa o servicio > NetSuite",
+    "pred_con": "4.0 > Falla de programa o servicio > NetSuite",
+    "pred_sin": "4.0 > Falla de programa o servicio > Coliseo",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": false
+  },
+  "17": {
+    "texto": "Actualización VPN",
+    "esperada": "4.0 > Instalación & Configuración > VPN",
+    "pred_con": "",
+    "pred_sin": "",
+    "ok_con": false,
+    "ok_sin": false,
+    "sin_cat_con": true,
+    "sin_cat_sin": true
+  },
+  "18": {
+    "texto": "No podia imprimir!",
+    "esperada": "4.0 > Falla de equipo > Impresora",
+    "pred_con": "",
+    "pred_sin": "",
+    "ok_con": false,
+    "ok_sin": false,
+    "sin_cat_con": true,
+    "sin_cat_sin": true
+  },
+  "19": {
+    "texto": "Hola chicos, Tomas Arriola ingreso en el dia de ayer en el depósito del CDS NQ, necesitamos reasignarle el mail de Ivan Blatner Alarcon a el, que es quien lo va a reemplazar, lo mismo que el numero de telefono es el del deposito de Neuquen. Muchas gracias!!",
+    "esperada": "4.0 > Gestión de personal > Alta de personal",
+    "pred_con": "4.0 > Gestión de personal > Alta de personal",
+    "pred_sin": "4.0 > Gestión de personal > Movimiento interno",
+    "ok_con": true,
+    "ok_sin": false,
+    "sin_cat_con": false,
+    "sin_cat_sin": false
+  },
+  "20": {
+    "texto": "No funciona mas el mousse!",
+    "esperada": "4.0 > Falla de equipo > Periférico",
+    "pred_con": "4.0 > Falla de equipo > Periférico",
+    "pred_sin": "4.0 > Falla de equipo > Periférico",
+    "ok_con": true,
+    "ok_sin": true,
+    "sin_cat_con": false,
+    "sin_cat_sin": false
   }
 }
