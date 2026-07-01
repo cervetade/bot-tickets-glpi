@@ -48,6 +48,7 @@ ESTADOS = (
     "procesando",
     "error",
     "finalizado",
+    "esperar_cambio_motivo",
 )
 
 # Columnas que son JSON: se serializan al guardar y se parsean al leer.

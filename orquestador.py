@@ -21,6 +21,9 @@ Probarlo por consola:  python orquestador.py
 """
 
 import json
+import re
+import unicodedata
+from difflib import SequenceMatcher
 
 import persistencia
 from clasificador import clasificar, clasificar_intencion, relevar, opciones_de_glpi
@@ -42,13 +45,42 @@ PLANTAS = [
     "Externo",
 ]
 
-_SI = ("si", "sí", "dale", "ok", "okay", "confirm", "correcto", "perfecto", "sip", "obvio")
+_SI = ("si", "sí", "se", "dale", "ok", "okay", "confirm", "correcto", "perfecto", "sip", "obvio")
 _NO = ("no", "nop", "cambi", "corregi", "corrige", "mal")
 
 
-def _empieza_con(mensaje, opciones):
-    """True si el mensaje (limpio) arranca con alguna de las opciones."""
+def _sin_tildes(s):
+    """Saca acentos: 'neuquén' -> 'neuquen'. Para comparar sin tropezar con tildes."""
+    return "".join(c for c in unicodedata.normalize("NFD", s)
+                   if unicodedata.category(c) != "Mn")
+
+
+def _norm(s):
+    """Minúsculas + sin tildes + sin espacios de más."""
+    return " ".join(_sin_tildes(s.strip().lower()).split())
+
+
+def _colapsar(s):
+    """Colapsa 3+ letras repetidas a una: 'seeee' -> 'se', 'siii' -> 'si'."""
+    return re.sub(r"(.)\1{2,}", r"\1", s)
+
+# Marcadores de que el usuario se está CORRIGIENDO (no ampliando). Cuando aparecen,
+# reemplazamos la descripción en vez de pegarle el texto viejo. Es heurístico:
+# cubre lo común, pero una corrección sin estas palabras puede arrastrar igual.
+_CORRIGE = ("mejor", "en realidad", "en verdad", "me equivoq", "equivoque", "equivoqué",
+            "olvidate", "olvidá", "olvida", "nono", "no no", "cambié", "cambie",
+            "en vez", "mentira", "perdón no", "perdon no")
+
+
+def _es_correccion(mensaje):
     m = mensaje.strip().lower()
+    return any(marca in m for marca in _CORRIGE)
+
+
+def _empieza_con(mensaje, opciones):
+    """True si el mensaje (limpio, sin repeticiones tipo 'siii') arranca con
+    alguna de las opciones. Así 'seeee', 'daleee', 'siii' cuentan como sí."""
+    m = _colapsar(mensaje.strip().lower())
     return any(m == o or m.startswith(o) for o in opciones)
 
 
@@ -58,19 +90,47 @@ def _numerar(opciones):
 
 def _elegir_de_lista(mensaje, opciones):
     """Devuelve la opción elegida por número o por nombre, o None si no matchea.
-    Tolera mensajes con texto alrededor del número (ej. 'la 1', 'axiaon 1')."""
+    Tolera 'la 3', '3', 'estoy en axion 3', pero NO confunde 'axion 32' con 'Axion 3'."""
     import re
     m = mensaje.strip().lower()
-    # 1) ¿hay un número que apunte a una opción? (ej. "1", "la 3", "axion 1")
-    nums = re.findall(r"\d+", m)
-    if len(nums) == 1:
-        i = int(nums[0]) - 1
+
+    # 1) Nombre EXACTO (tolerando mayúsculas/espacios): "axion 3", "home office".
+    for o in opciones:
+        if m == o.lower():
+            return o
+
+    # 2) Un número que apunte a la POSICIÓN, solo si el mensaje ES ese número
+    #    ("3", "la 3", "opción 3"). Así "axion 32" o "4342" NO entran por acá.
+    solo_num = re.fullmatch(r"(?:la\s+|opci[oó]n\s+|nro?\.?\s*|n[°º]\s*)?(\d+)", m)
+    if solo_num:
+        i = int(solo_num.group(1)) - 1
         if 0 <= i < len(opciones):
             return opciones[i]
-    # 2) ¿coincide por nombre?
+
+    # 3) Nombre contenido, pero por PALABRAS completas (no substring): todas las
+    #    palabras del nombre tienen que estar en el mensaje. "axion 3" ⊆ "estoy en
+    #    axion 3"  ✔  ;  "axion 3" ⊄ "axion 32"  ✘ (porque el token es "32", no "3").
+    tokens_m = set(re.findall(r"\w+", m))
     for o in opciones:
-        if o.lower() in m or m in o.lower():
+        tokens_o = set(re.findall(r"\w+", o.lower()))
+        if tokens_o and tokens_o <= tokens_m:
             return o
+
+    # 4) Fuzzy: tolera errores de tipeo y tildes ("home ofice", "neuquen"). SOLO si
+    #    el mensaje no trae números: los números ya se resolvieron EXACTO en el paso 2,
+    #    así evitamos que "axion 32" se parezca a "Axion 3" por un dígito.
+    if not re.search(r"\d", m):
+        mn = _norm(m)
+        mejor, mejor_ratio = None, 0.0
+        for o in opciones:
+            # comparamos contra el nombre y contra su versión sin el prefijo "axion"
+            formas = {_norm(o), _norm(o).replace("axion ", "")}
+            for f in formas:
+                ratio = SequenceMatcher(None, mn, f).ratio()
+                if ratio > mejor_ratio:
+                    mejor, mejor_ratio = o, ratio
+        if mejor_ratio >= 0.82:      # umbral: bastante parecido, pero no cualquier cosa
+            return mejor
     return None
 
 
@@ -110,6 +170,31 @@ class Orquestador:
     def _pregunta_lugar(self):
         return ("Para terminar, ¿en qué planta estás?\n"
                 f"{_numerar(PLANTAS)}\n(Respondé con el número o el nombre.)")
+
+    def _cerrar_o_preguntar(self, telefono, r, historial, planta):
+        """Con el resultado de relevar(), arma la respuesta: o la próxima pregunta
+        (si falta algo), o el cierre (pedir lugar / confirmar). Devuelve el texto
+        para el usuario. Lo usan tanto el flujo normal como el cambio de motivo."""
+        if not r.get("listo"):
+            pregunta = r.get("siguiente_pregunta") or (
+                "Perdón, no te entendí. ¿Me lo contás de otra forma?")
+            historial = historial + [{"rol": "bot", "texto": pregunta}]
+            persistencia.guardar(telefono, estado="esperar_descripcion",
+                                 historial=historial)
+            return pregunta
+
+        resumen = r.get("resumen") or "Resumen del pedido."
+        historial = historial + [{"rol": "bot", "texto": resumen}]
+        if not planta:
+            persistencia.guardar(telefono, estado="esperar_lugar",
+                                 datos=r.get("datos", {}), historial=historial)
+            return f"{resumen}\n\n{self._pregunta_lugar()}"
+
+        persistencia.guardar(telefono, estado="esperar_confirmacion",
+                             datos=r.get("datos", {}), historial=historial)
+        conv = persistencia.obtener(telefono)
+        return (f"{resumen}\n\n{self._preview_ticket(conv)}\n\n"
+                "¿Confirmo que cargue el ticket? (sí / no)")
 
     def procesar(self, telefono, mensaje):
         conv = persistencia.obtener(telefono)
@@ -151,6 +236,39 @@ class Orquestador:
                 return "Dale, contame qué hay que corregir."
             return "¿Confirmo el ticket? Respondé *sí* o *no*."
 
+        # ---------- Estado: confirmando un cambio de motivo a mitad de charla ----------
+        if estado == "esperar_cambio_motivo":
+            cambio = (conv.get("datos") or {}).get("_cambio") or {}
+
+            if _empieza_con(mensaje, _SI):
+                # Confirmó: arrancamos el motivo NUEVO desde cero. Descartamos lo
+                # relevado del viejo y dejamos el historial limpio con el pedido nuevo.
+                nuevo_motivo = cambio.get("motivo")
+                nueva_desc = cambio.get("descripcion") or ""
+                hist_limpio = [{"rol": "usuario", "texto": nueva_desc}]
+                persistencia.guardar(
+                    telefono, estado="esperar_descripcion", motivo=nuevo_motivo,
+                    categoria_glpi=cambio.get("categoria_glpi"),
+                    titulo=cambio.get("titulo"), descripcion=nueva_desc,
+                    datos={}, historial=hist_limpio,
+                )
+                rama = self.guia["motivos"].get(str(nuevo_motivo),
+                                                {"nombre": "", "preguntas": []})
+                r = relevar(rama, hist_limpio, self._opciones(rama, nuevo_motivo))
+                return "Listo, cambiamos el pedido. " + self._cerrar_o_preguntar(
+                    telefono, r, hist_limpio, planta)
+
+            if _empieza_con(mensaje, _NO):
+                # Sigue con el motivo viejo: repetimos la última pregunta pendiente.
+                ultima = cambio.get("ultima_pregunta") or "¿Seguimos? Contame."
+                nota = f"Dale, seguimos con lo de antes. {ultima}"
+                historial = historial + [{"rol": "bot", "texto": nota}]
+                persistencia.guardar(telefono, estado="esperar_descripcion",
+                                     datos={}, historial=historial)
+                return nota
+
+            return "¿Querés cambiar el pedido? Respondé *sí* o *no*."
+
         # A partir de acá siempre sumamos el mensaje del usuario al historial.
         historial.append({"rol": "usuario", "texto": mensaje})
 
@@ -171,7 +289,12 @@ class Orquestador:
                         return respuesta
 
                 # El detalle es lo que el usuario fue contando (campo 4 del ticket).
-                descripcion = f"{descripcion}. {mensaje}".strip(". ") if descripcion else mensaje
+                # Si amplía, concatenamos; si se corrige ("mejor un mouse"), reemplazamos
+                # para no arrastrar el pedido viejo a la descripción del ticket.
+                if descripcion and not _es_correccion(mensaje):
+                    descripcion = f"{descripcion}. {mensaje}".strip(". ")
+                else:
+                    descripcion = mensaje
                 c = clasificar(descripcion, self.categorias, self.motivos)
 
                 # Desambiguación: si el mensaje es dudoso, preguntamos UNA vez
@@ -204,28 +327,33 @@ class Orquestador:
             rama = self.guia["motivos"].get(str(motivo), {"nombre": "", "preguntas": []})
             r = relevar(rama, historial, self._opciones(rama, motivo))
 
-            if not r.get("listo"):
-                pregunta = r.get("siguiente_pregunta") or (
-                    "Perdón, no te entendí. ¿Me lo contás de otra forma?")
-                historial.append({"rol": "bot", "texto": pregunta})
-                persistencia.guardar(telefono, estado="esperar_descripcion",
-                                     historial=historial)
-                return pregunta
+            # ¿El usuario se fue de tema (pide algo de OTRO motivo)? Preguntamos
+            # antes de descartar lo que veníamos relevando (opción "preguntar").
+            if r.get("fuera_de_tema"):
+                c2 = clasificar(mensaje, self.categorias, self.motivos)
+                nuevo_motivo = c2.get("motivo")
+                # Solo lo tomamos como cambio si sale un motivo DISTINTO y claro.
+                if nuevo_motivo and nuevo_motivo != motivo:
+                    nom_viejo = self.motivos.get(str(motivo), "lo anterior")
+                    nom_nuevo = self.motivos.get(str(nuevo_motivo), "otra cosa")
+                    ultima_preg = next(
+                        (h["texto"] for h in reversed(historial) if h["rol"] == "bot"),
+                        "¿Seguimos?")
+                    cambio = {
+                        "motivo": nuevo_motivo,
+                        "categoria_glpi": c2.get("categoria_id"),
+                        "titulo": c2.get("titulo"),
+                        "descripcion": mensaje,
+                        "ultima_pregunta": ultima_preg,
+                    }
+                    persistencia.guardar(telefono, estado="esperar_cambio_motivo",
+                                         datos={"_cambio": cambio}, historial=historial)
+                    return (f"Pará, me parece que ahora me hablás de «{nom_nuevo}» "
+                            f"y veníamos con «{nom_viejo}». "
+                            "¿Querés cambiar el pedido? (sí / no)")
+                # Si no hay un motivo nuevo claro, seguimos normal (no cortamos).
 
-            # Relevamiento completo: guardamos datos y pedimos el LUGAR (campo 1),
-            # salvo que ya lo tengamos (ej. veníamos de una corrección).
-            resumen = r.get("resumen") or "Resumen del pedido."
-            historial.append({"rol": "bot", "texto": resumen})
-            if not planta:
-                persistencia.guardar(telefono, estado="esperar_lugar",
-                                     datos=r.get("datos", {}), historial=historial)
-                return f"{resumen}\n\n{self._pregunta_lugar()}"
-
-            persistencia.guardar(telefono, estado="esperar_confirmacion",
-                                 datos=r.get("datos", {}), historial=historial)
-            conv = persistencia.obtener(telefono)
-            return (f"{resumen}\n\n{self._preview_ticket(conv)}\n\n"
-                    "¿Confirmo que cargue el ticket? (sí / no)")
+            return self._cerrar_o_preguntar(telefono, r, historial, planta)
 
         except RuntimeError:
             persistencia.guardar(telefono, estado="error", historial=historial)
